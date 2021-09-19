@@ -3,13 +3,17 @@ import * as ReactDOM from 'react-dom';
 import {HashRouter,Route,Switch} from "react-router-dom";
 import Home from "./components/Home"
 import TopBar from "./components/common/TopBar";
+import theme from "./theme";
+import {ThemeProvider} from "@mui/material";
 
 const App = () => {
     return <HashRouter>
-        <TopBar/>
-        <Switch>
-            <Route exact path={"/"} component={Home}/>
-        </Switch>
+        <ThemeProvider theme={theme}>
+            <TopBar/>
+            <Switch>
+                <Route exact path={"/"} component={Home}/>
+            </Switch>
+        </ThemeProvider>
     </HashRouter>
 }
 
