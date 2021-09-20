@@ -19,6 +19,12 @@ module.exports = {
   },
   plugins: plugins,
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css']
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
+    fallback: { "stream": require.resolve("stream-browserify"),
+        "https": require.resolve("https-browserify"),
+        "http": require.resolve("stream-http"),
+        "timers": require.resolve("timers-browserify")
+    }
   },
+
 };

@@ -16,6 +16,9 @@ const createWindow = (): void => {
     width: 800,
     minHeight: 600,
     minWidth: 800,
+    webPreferences: {
+      webviewTag: true,
+    }
   });
 
   // and load the index.html of the app.
