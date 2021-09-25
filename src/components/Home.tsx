@@ -5,12 +5,14 @@ import Button from "@mui/material/Button";
 import CircularProgress from '@mui/material/CircularProgress';
 const { ipcRenderer } = window.require('electron');
 import {GET_YOUTUBE_ID, SET_YOUTUBE_URL} from "../events";
+import {useHistory} from "react-router-dom";
 
 const UrlInput = styled(TextField)`
   width: 100%;
 `
 
 const Home = () => {
+    const history = useHistory()
     const [youtubeURL, setYoutubeURL] = useState("")
     const [youtubeId, setYoutubeId] = useState("")
     const [isShowingSpinner, setSpinner] = useState(false)
@@ -24,6 +26,7 @@ const Home = () => {
         ipcRenderer.once(GET_YOUTUBE_ID, (event, receivedId: string) => {
             setYoutubeId(receivedId)
             setSpinner(false)
+            history.push(`/player/${receivedId}`)
         })
     }
     return <>

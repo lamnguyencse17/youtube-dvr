@@ -1,11 +1,13 @@
 import React from "react"
+import {useParams} from "react-router-dom";
 
-interface PlayerProps {
+interface YoutubeIdParams {
     youtubeId: string;
 }
 
-const Player = ({youtubeId}: PlayerProps) => {
-    return <div className={"mx-auto flex flex-col w-10/12 mt-16 space-y-5 h-1/4"}>
+const Player = () => {
+    const { youtubeId } = useParams<YoutubeIdParams>();
+    return <div className={"mx-auto flex flex-col md:w-11/12 lg:w-full mt-16 space-y-5 h-full"}>
         <div className={"mx-auto flex flex-row w-10/12 mt-5 h-3/4"}>
             {youtubeId === "" ? <></> : <>
                 <webview

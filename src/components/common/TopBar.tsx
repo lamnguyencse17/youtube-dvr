@@ -6,11 +6,26 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Drawer from '@mui/material/Drawer';
 import {styled} from "@mui/material/styles";
+import {Link as RouterLink} from "react-router-dom"
+import Link from "@mui/material/Link"
 
 
-const CustomDrawer = styled(Drawer)`width: 200px`
+const CustomDrawer = styled(Drawer)`
+  & .MuiDrawer-paper {
+    width: 20%;
+  }
+`
 
-const TopBar = () => {
+export type VideoTabTitle = {
+    title: string;
+    youtubeId: string;
+}
+
+interface TopBarProps {
+    titles: VideoTabTitle[]
+}
+
+const TopBar = ({titles}: TopBarProps) => {
     const [isDrawerOpen, setDrawer] = useState(false)
     const toggleDrawer = () => setDrawer(!isDrawerOpen)
     return <AppBar position="static">
@@ -25,17 +40,23 @@ const TopBar = () => {
             >
                 <MenuIcon />
             </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Youtube DVR
-            </Typography>
+            <Link component={RouterLink} to={"/"} style={{ textDecoration: 'none' }}>
+                <div className={"text-white text-xl font-bold"}>Youtube DVR</div>
+            </Link>
         </Toolbar>
         <CustomDrawer
             anchor={"left"}
             open={isDrawerOpen}
             onClose={toggleDrawer}
+            color={"primary"}
         >
-            <div className={"w-full"}>
-                <div className={"w-full"}>Test</div>
+            <div className={"w-full h-full flex flex-col text-center space-y-5 text-white text-xl"}>
+                {titles.map(({title, youtubeId}) => <div className={"w-full"}>
+                    <Link component={RouterLink} to={`/player/${youtubeId}`}>
+                        {title}
+                    </Link>
+                    </div>)
+                }
             </div>
         </CustomDrawer>
     </AppBar>
