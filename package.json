@@ -69,6 +69,8 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.61",
+    "@types/ffmpeg-static": "^3.0.0",
+    "@types/fluent-ffmpeg": "^2.1.18",
     "@types/react": "^17.0.21",
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.9",
@@ -96,12 +98,28 @@
     "@mui/icons-material": "^5.0.0",
     "@mui/material": "^5.0.0",
     "electron-squirrel-startup": "^1.0.0",
-    "https-browserify": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "stream-browserify": "^3.0.0",
-    "stream-http": "^3.2.0",
-    "timers-browserify": "^2.0.12",
+    "react-toastify": "^8.0.3",
+    "tree-kill": "^1.2.2",
     "ytdl-core": "^4.9.1"
+  },
+  "build": {
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/bin/ffmpeg.exe",
+      "node_modules/ffmpeg-static/bin/ffmpeg",
+      "node_modules/ffmpeg-static/index.js",
+      "node_modules/ffmpeg-static/package.json"
+    ],
+    "files": [
+      "package.json",
+      {
+        "from": "bin",
+        "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
   }
 }

@@ -1,0 +1,3 @@
+export const SET_YOUTUBE_URL = "SET_YOUTUBE_URL"
+export const GET_YOUTUBE_ID = "GET_YOUTUBE_ID"
+export const RECEIVE_ERROR = "RECEIVE_ERROR"

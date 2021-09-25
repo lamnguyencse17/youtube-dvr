@@ -9,6 +9,12 @@ module.exports = {
     rules: require('./webpack.rules'),
   },
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+    // fallback: {
+    //   "stream": require.resolve("stream-browserify"),
+    //   "https": require.resolve("https-browserify"),
+    //   "http": require.resolve("stream-http"),
+    //   "timers": require.resolve("timers-browserify")
+    // }
   },
 };
