@@ -97,9 +97,12 @@
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.0.0",
     "@mui/material": "^5.0.0",
+    "@reduxjs/toolkit": "^1.6.1",
+    "@types/react-redux": "^7.1.18",
     "electron-squirrel-startup": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-redux": "^7.2.5",
     "react-toastify": "^8.0.3",
     "tree-kill": "^1.2.2",
     "ytdl-core": "^4.9.1"

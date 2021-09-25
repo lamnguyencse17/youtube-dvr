@@ -10,6 +10,8 @@ import {CHANGE_TITLES_LIST, RECEIVE_ERROR} from "./events";
 const { ipcRenderer } = window.require('electron');
 import { ToastContainer, toast } from 'react-toastify';
 import Player from "./components/Player";
+import {Provider} from "react-redux";
+import {store} from "./store";
 
 const App = () => {
     useEffect(() => {
@@ -23,16 +25,18 @@ const App = () => {
     }, [])
 
     const [topbarTitles, setTopbarTitles] = useState<VideoTabTitle[]>([{title: "Kanata Race", youtubeId: "G5u6qEy5TW4"}])
-    return <HashRouter>
-        <ThemeProvider theme={theme}>
-            <TopBar titles={topbarTitles}/>
-            <Switch>
-                <Route exact path={"/"} component={Home}/>
-                <Route path={"/player/:youtubeId"} component={Player}/>
-            </Switch>
-            <ToastContainer/>
-        </ThemeProvider>
-    </HashRouter>
+    return <Provider store={store}>
+        <HashRouter>
+            <ThemeProvider theme={theme}>
+                <TopBar titles={topbarTitles}/>
+                <Switch>
+                    <Route exact path={"/"} component={Home}/>
+                    <Route path={"/player/:youtubeId"} component={Player}/>
+                </Switch>
+                <ToastContainer/>
+            </ThemeProvider>
+        </HashRouter>
+    </Provider>
 }
 
 const render = () => {
