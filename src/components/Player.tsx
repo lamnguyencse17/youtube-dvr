@@ -1,6 +1,7 @@
 import React from "react"
 import {useParams} from "react-router-dom";
 import {useAppSelector} from "../hooks";
+import PlayerInfo from "./player/PlayerInfo";
 
 interface YoutubeIdParams {
     youtubeId: string;
@@ -10,8 +11,9 @@ const Player = () => {
     const {isShowingLiveChat} = useAppSelector(state => state.configs)
     const { youtubeId } = useParams<YoutubeIdParams>();
     if (isShowingLiveChat) {
-        return <div className={"mx-auto flex flex-row w-full mt-16 h-full"}>
-            {youtubeId === "" ? <></> : <>
+        return <div className={"mx-auto flex flex-col w-full mt-2 h-full"}>
+            {youtubeId === "" ? <></> : <PlayerInfo/>}
+            {youtubeId === "" ? <></> : <div className={"flex flex-row"}>
                 <webview
                     src={`https://www.youtube.com/embed/${youtubeId}`} title="YouTube video player"
                     allowFullScreen
@@ -22,15 +24,16 @@ const Player = () => {
                     allowFullScreen
                     style={{width: "20%"}}
                 />
-            </>}
+            </div>}
         </div>
     }
-    return <div className={"mx-auto flex flex-row w-full mt-16 h-full"}>
+    return <div className={"mx-auto flex flex-col w-full mt-16 h-full"}>
         {youtubeId === "" ? <></> : <>
+            <PlayerInfo/>
             <webview
                 src={`https://www.youtube.com/embed/${youtubeId}`} title="YouTube video player"
                 allowFullScreen
-                style={{width: "100%"}}
+                style={{width: "100%", height: "80%"}}
             />
         </>}
     </div>

@@ -9,7 +9,7 @@ import {Link as RouterLink} from "react-router-dom"
 import Link from "@mui/material/Link"
 import {useAppSelector} from "../../hooks";
 import Util from "./Util";
-import {YoutubeInfo} from "../../core/ytdl";
+import {isLiveTab} from "../../utils/tabs";
 
 
 const CustomDrawer = styled(Drawer)`
@@ -18,18 +18,9 @@ const CustomDrawer = styled(Drawer)`
   }
 `
 
-const determineLiveTab = (tabs: YoutubeInfo[], activeTab: string): boolean => {
-    console.log(activeTab)
-    if (tabs.length === 0 || activeTab === ""){
-        return false
-    }
-    const targetTab = tabs.find(tab => tab.title === activeTab);
-    return targetTab.isLiveNow
-}
-
 const TopBar = () => {
     const {tabs, activeTab} = useAppSelector(state => state.tabs)
-    const isLive = determineLiveTab(tabs, activeTab)
+    const isLive = isLiveTab(tabs, activeTab)
     const [isDrawerOpen, setDrawer] = useState(false)
     const toggleDrawer = () => setDrawer(!isDrawerOpen)
     return <AppBar position="static">
