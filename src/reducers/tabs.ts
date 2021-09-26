@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store'
 
-type TabInfo = {
+export type TabInfo = {
     title: string;
     youtubeId: string;
 }
@@ -23,6 +23,8 @@ export const tabSlice = createSlice({
         addTab: (state, action: PayloadAction<TabInfo>) => {
             const newTab = action.payload
             state.tabs = [...state.tabs, newTab]
+            state.activeTab = newTab.title
+            console.log(state)
         },
         removeTab: (state, action: PayloadAction<string>) => {
             const youtubeId = action.payload
@@ -30,9 +32,19 @@ export const tabSlice = createSlice({
             const newTabs = state.tabs.filter(tab => tab.youtubeId !== youtubeId);
             state.tabs = [...newTabs]
         },
+        chooseTab: (state, action: PayloadAction<string>) => {
+            const youtubeId = action.payload
+            if (state.activeTab === youtubeId){
+                return
+            }
+            state.activeTab = youtubeId
+            if (state.tabs.filter(tab => tab.youtubeId === youtubeId).length === 0){
+                state.tabs.push({title: "", youtubeId})
+            }
+        }
     }
 })
 
-export const { addTab, removeTab } = tabSlice.actions
+export const { addTab, removeTab, chooseTab } = tabSlice.actions
 export const selectTabReducer = (state: RootState) => state.tabs
 export default tabSlice.reducer

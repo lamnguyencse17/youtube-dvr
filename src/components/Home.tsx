@@ -4,17 +4,19 @@ import {styled} from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CircularProgress from '@mui/material/CircularProgress';
 const { ipcRenderer } = window.require('electron');
-import {GET_YOUTUBE_ID, SET_YOUTUBE_URL} from "../events";
+import {GET_YOUTUBE_INFO, SET_YOUTUBE_URL} from "../events";
 import {useHistory} from "react-router-dom";
+import {addTab, TabInfo} from "../reducers/tabs";
+import {useAppDispatch} from "../hooks";
 
 const UrlInput = styled(TextField)`
   width: 100%;
 `
 
 const Home = () => {
+    const dispatch = useAppDispatch()
     const history = useHistory()
     const [youtubeURL, setYoutubeURL] = useState("")
-    const [youtubeId, setYoutubeId] = useState("")
     const [isShowingSpinner, setSpinner] = useState(false)
     const handleSetYoutubeURL = (e: React.ChangeEvent<HTMLInputElement>) => {
         setYoutubeURL(e.target.value)
@@ -23,10 +25,10 @@ const Home = () => {
     const handleProcessYoutubeURL = () => {
         setSpinner(true)
         ipcRenderer.send(SET_YOUTUBE_URL, youtubeURL)
-        ipcRenderer.once(GET_YOUTUBE_ID, (event, receivedId: string) => {
-            setYoutubeId(receivedId)
+        ipcRenderer.once(GET_YOUTUBE_INFO, (event, youtubeInfo: TabInfo) => {
             setSpinner(false)
-            history.push(`/player/${receivedId}`)
+            dispatch(addTab(youtubeInfo))
+            history.push(`/player/${youtubeInfo.youtubeId}`)
         })
     }
     return <>

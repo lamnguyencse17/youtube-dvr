@@ -8,6 +8,7 @@ import Drawer from '@mui/material/Drawer';
 import {styled} from "@mui/material/styles";
 import {Link as RouterLink} from "react-router-dom"
 import Link from "@mui/material/Link"
+import {useAppSelector} from "../../hooks";
 
 
 const CustomDrawer = styled(Drawer)`
@@ -16,16 +17,9 @@ const CustomDrawer = styled(Drawer)`
   }
 `
 
-export type VideoTabTitle = {
-    title: string;
-    youtubeId: string;
-}
-
-interface TopBarProps {
-    titles: VideoTabTitle[]
-}
-
-const TopBar = ({titles}: TopBarProps) => {
+const TopBar = () => {
+    const tabs = useAppSelector(state => state.tabs.tabs)
+    console.log(tabs)
     const [isDrawerOpen, setDrawer] = useState(false)
     const toggleDrawer = () => setDrawer(!isDrawerOpen)
     return <AppBar position="static">
@@ -51,7 +45,7 @@ const TopBar = ({titles}: TopBarProps) => {
             color={"primary"}
         >
             <div className={"w-full h-full flex flex-col text-center space-y-5 text-white text-xl"}>
-                {titles.map(({title, youtubeId}) => <div className={"w-full"}>
+                {tabs.map(({title, youtubeId}) => <div className={"w-full"}>
                     <Link component={RouterLink} to={`/player/${youtubeId}`}>
                         {title}
                     </Link>
