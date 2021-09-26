@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Drawer from '@mui/material/Drawer';
@@ -9,6 +8,8 @@ import {styled} from "@mui/material/styles";
 import {Link as RouterLink} from "react-router-dom"
 import Link from "@mui/material/Link"
 import {useAppSelector} from "../../hooks";
+import Util from "./Util";
+import {YoutubeInfo} from "../../core/ytdl";
 
 
 const CustomDrawer = styled(Drawer)`
@@ -17,9 +18,18 @@ const CustomDrawer = styled(Drawer)`
   }
 `
 
+const determineLiveTab = (tabs: YoutubeInfo[], activeTab: string): boolean => {
+    console.log(activeTab)
+    if (tabs.length === 0 || activeTab === ""){
+        return false
+    }
+    const targetTab = tabs.find(tab => tab.title === activeTab);
+    return targetTab.isLiveNow
+}
+
 const TopBar = () => {
-    const tabs = useAppSelector(state => state.tabs.tabs)
-    console.log(tabs)
+    const {tabs, activeTab} = useAppSelector(state => state.tabs)
+    const isLive = determineLiveTab(tabs, activeTab)
     const [isDrawerOpen, setDrawer] = useState(false)
     const toggleDrawer = () => setDrawer(!isDrawerOpen)
     return <AppBar position="static">
@@ -37,6 +47,7 @@ const TopBar = () => {
             <Link component={RouterLink} to={"/"} style={{ textDecoration: 'none' }}>
                 <div className={"text-white text-xl font-bold"}>Youtube DVR</div>
             </Link>
+            <Util isLive={isLive}/>
         </Toolbar>
         <CustomDrawer
             anchor={"left"}

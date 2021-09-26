@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import tabReducer from "./reducers/tabs"
+import configReducer from "./reducers/configs"
 
 export const store = configureStore({
     reducer: {
-        tabs: tabReducer
+        tabs: tabReducer,
+        configs: configReducer
     },
 })
 

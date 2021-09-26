@@ -11,6 +11,17 @@ export const initYTDL = () => {
     ipcMain.on(SET_YOUTUBE_URL, handleSetYoutubeURL)
 }
 
+export type YoutubeInfo = {
+    title: string;
+    youtubeId: string;
+    channelName: string;
+    channelId: string;
+    description: string;
+    isLiveNow: boolean;
+    isLiveContent: boolean;
+    startTimestamp: string;
+}
+
 const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
     let youtubeInfo;
     try {
@@ -35,8 +46,18 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
 
 const getBinaryPath = () => path.join(binRootPath, "bin", "youtube-dl.exe")
 
-const getYoutubeInfo = async (youtubeURL: string) => {
+const getYoutubeInfo = async (youtubeURL: string): Promise<YoutubeInfo> => {
     const youtubeInfo = await ytdl.getBasicInfo(youtubeURL)
-    const youtubeId = ytdl.getVideoID(youtubeURL)
-    return {title: youtubeInfo.videoDetails.title, youtubeId}
+    const {videoId: youtubeId, ownerChannelName: channelName, channelId, description, isLiveContent, title} = youtubeInfo.videoDetails
+    const {isLiveNow, startTimestamp} = youtubeInfo.videoDetails.liveBroadcastDetails
+    return {
+        title,
+        youtubeId,
+        channelName,
+        channelId,
+        description,
+        isLiveContent,
+        isLiveNow,
+        startTimestamp
+    }
 }

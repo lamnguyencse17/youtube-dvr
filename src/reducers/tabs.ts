@@ -1,13 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store'
-
-export type TabInfo = {
-    title: string;
-    youtubeId: string;
-}
+import {YoutubeInfo} from "../core/ytdl";
 
 interface TabState {
-    tabs: TabInfo[];
+    tabs: YoutubeInfo[];
     activeTab: string;
 }
 
@@ -20,11 +16,10 @@ export const tabSlice = createSlice({
     name: "tabs",
     initialState,
     reducers: {
-        addTab: (state, action: PayloadAction<TabInfo>) => {
+        addTab: (state, action: PayloadAction<YoutubeInfo>) => {
             const newTab = action.payload
             state.tabs = [...state.tabs, newTab]
             state.activeTab = newTab.title
-            console.log(state)
         },
         removeTab: (state, action: PayloadAction<string>) => {
             const youtubeId = action.payload
@@ -38,9 +33,6 @@ export const tabSlice = createSlice({
                 return
             }
             state.activeTab = youtubeId
-            if (state.tabs.filter(tab => tab.youtubeId === youtubeId).length === 0){
-                state.tabs.push({title: "", youtubeId})
-            }
         }
     }
 })
