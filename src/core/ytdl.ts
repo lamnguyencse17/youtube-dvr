@@ -1,4 +1,4 @@
-import {GET_YOUTUBE_INFO, RECEIVE_ERROR, SET_YOUTUBE_URL} from "../events";
+import {GET_YOUTUBE_INFO, RECEIVE_ERROR, RECORDING_STARTED, SET_YOUTUBE_URL} from "../events";
 import {app, IpcMainEvent, ipcMain} from "electron";
 import cp from "child_process"
 import path from "path";
@@ -6,9 +6,11 @@ import ytdl from "ytdl-core"
 import {getProcessManager} from "./processManager";
 
 const binRootPath = app.getAppPath();
+let window: Electron.BrowserWindow
 
-export const initYTDL = () => {
+export const initYTDL = (mainWindow: Electron.BrowserWindow) => {
     ipcMain.on(SET_YOUTUBE_URL, handleSetYoutubeURL)
+    window = mainWindow
 }
 
 export type YoutubeInfo = {
@@ -20,6 +22,7 @@ export type YoutubeInfo = {
     isLiveNow: boolean;
     isLiveContent: boolean;
     startTimestamp: string;
+    isRecording: boolean;
 }
 
 const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
@@ -42,6 +45,7 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
     ytdlProcess.stdout.on('data', function(data) {
         console.log('stdout: ' + data);
     });
+    window.webContents.send(RECORDING_STARTED, youtubeId)
 }
 
 const getBinaryPath = () => path.join(binRootPath, "bin", "youtube-dl.exe")
@@ -58,6 +62,7 @@ const getYoutubeInfo = async (youtubeURL: string): Promise<YoutubeInfo> => {
         description,
         isLiveContent,
         isLiveNow,
-        startTimestamp
+        startTimestamp,
+        isRecording: false
     }
 }

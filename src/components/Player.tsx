@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useEffect} from "react"
 import {useParams} from "react-router-dom";
 import {useAppSelector} from "../hooks";
 import PlayerInfo from "./player/PlayerInfo";
@@ -12,7 +12,7 @@ const Player = () => {
     const { youtubeId } = useParams<YoutubeIdParams>();
     if (isShowingLiveChat) {
         return <div className={"mx-auto flex flex-col w-full mt-2 h-full"}>
-            {youtubeId === "" ? <></> : <PlayerInfo/>}
+            {youtubeId === "" ? <></> : <PlayerInfo />}
             {youtubeId === "" ? <></> : <div className={"flex flex-row h-full"}>
                 <webview
                     src={`https://www.youtube.com/embed/${youtubeId}`} title="YouTube video player"

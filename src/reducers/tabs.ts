@@ -7,6 +7,11 @@ interface TabState {
     activeTab: string;
 }
 
+type SetRecordingPayload = {
+    youtubeId: string;
+    recordingStatus: boolean;
+}
+
 let initialState: TabState = {
     tabs: [],
     activeTab: "home"
@@ -32,6 +37,12 @@ export const tabSlice = createSlice({
             const newTabs = state.tabs.filter(tab => tab.youtubeId !== youtubeId);
             state.tabs = [...newTabs]
         },
+        setRecording: (state, action: PayloadAction<SetRecordingPayload>) => {
+            const {youtubeId, recordingStatus} = action.payload
+            Object.assign(state.tabs.find(tab => tab.youtubeId === youtubeId), {
+                recording: recordingStatus
+            })
+        },
         chooseTab: (state, action: PayloadAction<string>) => {
             const youtubeId = action.payload
             if (state.activeTab === youtubeId){
@@ -42,6 +53,6 @@ export const tabSlice = createSlice({
     }
 })
 
-export const { addTab, removeTab, chooseTab } = tabSlice.actions
+export const { addTab, removeTab, chooseTab, setRecording } = tabSlice.actions
 export const selectTabReducer = (state: RootState) => state.tabs
 export default tabSlice.reducer

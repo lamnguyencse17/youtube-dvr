@@ -32,7 +32,7 @@ const createWindow = (): void => {
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
   initProcessManager()
-  initYTDL()
+  initYTDL(mainWindow)
 };
 
 // This method will be called when Electron has finished
