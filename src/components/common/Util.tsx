@@ -29,7 +29,6 @@ const StopRecordingButton = styled(Button)`
 `
 
 const Util = ({isLive}: UtilProps) => {
-    const { youtubeId } = useParams<YoutubeIdParams>();
     const dispatch = useAppDispatch()
     const location = useLocation()
     const isAtPlayer = location.pathname.includes("player")
@@ -40,7 +39,6 @@ const Util = ({isLive}: UtilProps) => {
         currentTab = useAppSelector(state => state.tabs.tabs).find(tab => tab.youtubeId === youtubeId)
     }
     const renderRecordingButton = () => {
-        console.log(currentTab)
         if (!isAtPlayer || !currentTab){
             return <></>
         }

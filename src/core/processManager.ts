@@ -1,5 +1,7 @@
 import cp from "child_process"
 import kill from "tree-kill"
+import {ipcMain} from "electron";
+import {RECORDING_STOPPED} from "../events";
 
 type ProcessDict = {[key: string]: cp.ChildProcess}
 
@@ -7,6 +9,9 @@ class ProcessManager {
     queue: ProcessDict
     constructor() {
         this.queue = {}
+        ipcMain.on(RECORDING_STOPPED, (event, youtubeId: string) => {
+            this.killProcess(youtubeId)
+        })
     }
     addToDict = (youtubeId: string, process: cp.ChildProcess) => {
         if (this.queue[youtubeId] !== undefined){
@@ -19,14 +24,17 @@ class ProcessManager {
     }
     killAllProcess = () => {
         Object.keys(this.queue).forEach(key => {
-            if (this.queue[key].killed){
-                return
-            }
-            kill(this.queue[key].pid, "SIGINT", (err) => {
-                console.error(err)
-            })
-            delete this.queue[key]
+            this.killProcess(key)
         })
+    }
+    killProcess = (youtubeId: string) => {
+        if (this.queue[youtubeId].killed){
+            return
+        }
+        kill(this.queue[youtubeId].pid, "SIGINT", (err) => {
+            console.error(err)
+        })
+        delete this.queue[youtubeId]
     }
     countProcess = (): number => {
         return Object.keys(this.queue).length
