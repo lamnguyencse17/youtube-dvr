@@ -26,7 +26,7 @@ export type YoutubeInfo = {
 }
 
 const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
-    let youtubeInfo;
+    let youtubeInfo: YoutubeInfo
     try {
         youtubeInfo = await getYoutubeInfo(youtubeURL)
     } catch(err) {
@@ -37,7 +37,7 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
     const {youtubeId} = youtubeInfo
     const processManager = getProcessManager()
     const ytdlPath = getBinaryPath()
-    const ytdlProcess = cp.execFile(ytdlPath, ["-f", "301", youtubeURL, "--continue", "--no-part", "--hls-use-mpegts"])
+    const ytdlProcess = cp.execFile(ytdlPath, ["-f", "301", youtubeURL, "--continue", "--no-part", "--hls-use-mpegts", "-o", `${youtubeInfo.youtubeId}.mp4`])
     processManager.addToDict(youtubeId, ytdlProcess)
     ytdlProcess.stderr.on('error', function(data) {
         event.reply(RECEIVE_ERROR, data)

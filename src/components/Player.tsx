@@ -1,4 +1,4 @@
-import React, {useEffect} from "react"
+import React from "react"
 import {useParams} from "react-router-dom";
 import {useAppSelector} from "../hooks";
 import PlayerInfo from "./player/PlayerInfo";

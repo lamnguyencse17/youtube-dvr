@@ -32,18 +32,18 @@ const Util = ({isLive}: UtilProps) => {
     const dispatch = useAppDispatch()
     const location = useLocation()
     const isAtPlayer = location.pathname.includes("player")
-    const activeTab = useAppSelector(state => state.tabs.activeTab)
+    const tabState = useAppSelector(state => state.tabs)
     let currentTab: YoutubeInfo
-    if (activeTab !== "home"){
+    if (tabState.activeTab !== "home"){
         const youtubeId = location.pathname.split("/")[2]
-        currentTab = useAppSelector(state => state.tabs.tabs).find(tab => tab.youtubeId === youtubeId)
+        currentTab = tabState.tabs.find(tab => tab.youtubeId === youtubeId)
     }
     const renderRecordingButton = () => {
         if (!isAtPlayer || !currentTab){
             return <></>
         }
         if (currentTab.isRecording){
-            return <StopRecordingButton>Start Recording</StopRecordingButton>
+            return <StopRecordingButton>Stop Recording</StopRecordingButton>
         }
         return <StartRecordingButton>Start Recording</StartRecordingButton>
     }
