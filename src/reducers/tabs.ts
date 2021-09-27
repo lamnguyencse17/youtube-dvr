@@ -7,9 +7,14 @@ interface TabState {
     activeTab: string;
 }
 
-const initialState: TabState = {
+let initialState: TabState = {
     tabs: [],
     activeTab: "home"
+}
+
+const persistedState = JSON.parse(localStorage.getItem("REDUX"))
+if (persistedState){
+    initialState = persistedState.tabs
 }
 
 export const tabSlice = createSlice({

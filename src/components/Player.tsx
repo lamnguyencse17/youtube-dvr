@@ -13,16 +13,16 @@ const Player = () => {
     if (isShowingLiveChat) {
         return <div className={"mx-auto flex flex-col w-full mt-2 h-full"}>
             {youtubeId === "" ? <></> : <PlayerInfo/>}
-            {youtubeId === "" ? <></> : <div className={"flex flex-row"}>
+            {youtubeId === "" ? <></> : <div className={"flex flex-row h-full"}>
                 <webview
                     src={`https://www.youtube.com/embed/${youtubeId}`} title="YouTube video player"
                     allowFullScreen
-                    style={{width: "80%"}}
+                    style={{width: "80%", height: "100%"}}
                 />
                 <webview
                     src={`https://www.youtube.com/live_chat?v=${youtubeId}`} title="YouTube video player"
                     allowFullScreen
-                    style={{width: "20%"}}
+                    style={{width: "20%", height: "100%"}}
                 />
             </div>}
         </div>

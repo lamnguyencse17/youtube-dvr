@@ -109,20 +109,16 @@
   },
   "build": {
     "asarUnpack": [
-      "node_modules/ffmpeg-static/bin/ffmpeg.exe",
-      "node_modules/ffmpeg-static/bin/ffmpeg",
-      "node_modules/ffmpeg-static/index.js",
-      "node_modules/ffmpeg-static/package.json"
+      "bin/ffmpeg.exe",
+      "bin/youtube-dl.exe"
     ],
-    "files": [
-      "package.json",
+    "extraResources": [
       {
-        "from": "bin",
+        "from": "./bin/**",
         "to": "bin",
         "filter": [
           "**/*"
         ]
-      }
-    ]
+      }]
   }
 }

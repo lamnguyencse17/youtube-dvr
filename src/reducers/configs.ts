@@ -5,8 +5,14 @@ interface Configs {
     isShowingLiveChat: boolean
 }
 
-const initialState: Configs = {
+let initialState: Configs = {
     isShowingLiveChat: false
+}
+
+const persistedState = JSON.parse(localStorage.getItem("REDUX"))
+
+if (persistedState){
+    initialState = persistedState.configs
 }
 
 export const configSlice = createSlice({

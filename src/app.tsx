@@ -5,7 +5,7 @@ import Home from "./components/Home"
 import TopBar from "./components/common/TopBar";
 import theme from "./theme";
 import {ThemeProvider} from "@mui/material";
-import {useEffect } from "react";
+import {useEffect, useState} from "react";
 import {RECEIVE_ERROR} from "./events";
 const { ipcRenderer } = window.require('electron');
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,11 +14,20 @@ import {Provider} from "react-redux";
 import {store} from "./store";
 
 const App = () => {
+    const [unloadCalled, setUnload] = useState(false)
     useEffect(() => {
         ipcRenderer.on(RECEIVE_ERROR, (event, err: string) => {
             console.log(err)
             toast(err);
         })
+        window.onbeforeunload = function (){
+            if (!unloadCalled){
+                const reduxState = store.getState()
+                console.log(reduxState)
+                localStorage.setItem("REDUX", JSON.stringify(reduxState))
+                setUnload(true)
+            }
+        }
     }, [])
     return <HashRouter>
         <ThemeProvider theme={theme}>
