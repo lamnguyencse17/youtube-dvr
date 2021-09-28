@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import type { RootState } from '../store'
 
 interface Configs {
@@ -21,10 +21,15 @@ export const configSlice = createSlice({
     reducers: {
         toggleShowingLiveChat: (state) => {
             state.isShowingLiveChat = !state.isShowingLiveChat
+        },
+        replaceConfigState: (state, action: PayloadAction<Configs>) => {
+            if (action.payload != null){
+                state = {...action.payload}
+            }
         }
     }
 })
 
-export const { toggleShowingLiveChat } = configSlice.actions
+export const { toggleShowingLiveChat, replaceConfigState } = configSlice.actions
 export const selectConfigReducer = (state: RootState) => state.configs
 export default configSlice.reducer

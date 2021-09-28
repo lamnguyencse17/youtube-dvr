@@ -6,14 +6,15 @@ import TopBar from "./components/common/TopBar";
 import theme from "./theme";
 import {ThemeProvider} from "@mui/material";
 import {useEffect, useState} from "react";
-import {RECEIVE_ERROR, RECORDING_STARTED} from "./events";
+import {LOAD_STATE, RECEIVE_ERROR, RECORDING_STARTED, UNLOAD_WEB} from "./events";
 const { ipcRenderer } = window.require('electron');
 import { ToastContainer, toast } from 'react-toastify';
 import Player from "./components/Player";
 import {Provider} from "react-redux";
-import {store} from "./store";
+import {RootState, store} from "./store";
 import {useAppDispatch} from "./hooks";
-import {setRecording} from "./reducers/tabs";
+import {replaceTabState, setRecording} from "./reducers/tabs";
+import {replaceConfigState} from "./reducers/configs";
 
 const App = () => {
     const [unloadCalled, setUnload] = useState(false)
@@ -26,11 +27,19 @@ const App = () => {
         ipcRenderer.on(RECORDING_STARTED, (event, youtubeId: string) => {
             dispatch(setRecording({youtubeId, recordingStatus: true}))
         })
+        ipcRenderer.send(LOAD_STATE)
+        ipcRenderer.on(LOAD_STATE, (event, newState: RootState) => {
+            console.log(newState)
+            if (!newState){
+                return
+            }
+            dispatch(replaceTabState(newState.tabs))
+            dispatch(replaceConfigState(newState.configs))
+        })
         window.onbeforeunload = function (){
             if (!unloadCalled){
                 const reduxState = store.getState()
-                console.log(reduxState)
-                localStorage.setItem("REDUX", JSON.stringify(reduxState))
+                ipcRenderer.send(UNLOAD_WEB, reduxState)
                 setUnload(true)
             }
         }

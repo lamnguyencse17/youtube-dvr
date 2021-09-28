@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store'
 import {YoutubeInfo} from "../core/ytdl";
+import {LOAD_STATE} from "../events";
+const { ipcRenderer } = window.require('electron');
 
 interface TabState {
     tabs: YoutubeInfo[];
@@ -12,14 +14,9 @@ type SetRecordingPayload = {
     recordingStatus: boolean;
 }
 
-let initialState: TabState = {
+const initialState: TabState = {
     tabs: [],
     activeTab: "home"
-}
-
-const persistedState = JSON.parse(localStorage.getItem("REDUX"))
-if (persistedState){
-    initialState = persistedState.tabs
 }
 
 export const tabSlice = createSlice({
@@ -46,13 +43,18 @@ export const tabSlice = createSlice({
         chooseTab: (state, action: PayloadAction<string>) => {
             const youtubeId = action.payload
             if (state.activeTab === youtubeId){
-                return
+                return state
             }
             state.activeTab = youtubeId
+        },
+        replaceTabState: (state, action: PayloadAction<TabState>) => {
+            if (action.payload != null){
+                return {...action.payload}
+            }
         }
     }
 })
 
-export const { addTab, removeTab, chooseTab, setRecording } = tabSlice.actions
+export const { addTab, removeTab, chooseTab, setRecording, replaceTabState } = tabSlice.actions
 export const selectTabReducer = (state: RootState) => state.tabs
 export default tabSlice.reducer
