@@ -29,7 +29,6 @@ const App = () => {
         })
         ipcRenderer.send(LOAD_STATE)
         ipcRenderer.on(LOAD_STATE, (event, newState: RootState) => {
-            console.log(newState)
             if (!newState){
                 return
             }

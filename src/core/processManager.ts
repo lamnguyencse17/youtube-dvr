@@ -1,5 +1,6 @@
 import cp from "child_process"
 import kill from "tree-kill"
+import ps from "ps-node"
 import {ipcMain} from "electron";
 import {RECORDING_STOPPED} from "../events";
 

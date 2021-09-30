@@ -37,9 +37,10 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
     const {youtubeId} = youtubeInfo
     const processManager = getProcessManager()
     const ytdlPath = getBinaryPath()
-    const ytdlProcess = cp.execFile(ytdlPath, ["-f", "301", youtubeURL, "--continue", "--no-part", "--hls-use-mpegts", "-o", `${youtubeInfo.youtubeId}.mp4`])
+    const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", "(bestvideo+bestaudio/best)", "--merge-output-format", "mp4", "--continue", "--no-part", "-o", `${youtubeInfo.youtubeId}.mp4`])
     processManager.addToDict(youtubeId, ytdlProcess)
-    ytdlProcess.stderr.on('error', function(data) {
+    ytdlProcess.stderr.on('data', function(data) {
+        console.log('stderr: ' + data)
         event.reply(RECEIVE_ERROR, data)
     });
     ytdlProcess.stdout.on('data', function(data) {
