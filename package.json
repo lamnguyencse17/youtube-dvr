@@ -71,6 +71,7 @@
     "@electron-forge/plugin-webpack": "^6.0.0-beta.61",
     "@types/ffmpeg-static": "^3.0.0",
     "@types/fluent-ffmpeg": "^2.1.18",
+    "@types/ps-node": "^0.1.1",
     "@types/react": "^17.0.21",
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.9",

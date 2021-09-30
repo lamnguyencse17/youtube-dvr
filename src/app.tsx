@@ -22,7 +22,7 @@ const App = () => {
     useEffect(() => {
         ipcRenderer.on(RECEIVE_ERROR, (event, err: string) => {
             console.log(err)
-            toast(err);
+            // toast(err);
         })
         ipcRenderer.on(RECORDING_STARTED, (event, youtubeId: string) => {
             dispatch(setRecording({youtubeId, recordingStatus: true}))
