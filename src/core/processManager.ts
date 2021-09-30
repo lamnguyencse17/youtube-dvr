@@ -11,16 +11,7 @@ class ProcessManager {
     constructor() {
         this.queue = {}
         ipcMain.on(STOP_RECORDING, (event, youtubeId: string) => {
-            ps.lookup({
-                command: "ffmpeg"
-            }, (err, results) => {
-                if (err){
-                    console.log(err)
-                    return
-                }
-                console.log(results)
-                this.killProcess(youtubeId)
-            })
+            this.killProcess(youtubeId)
         })
     }
     addToDict = (youtubeId: string, process: cp.ChildProcess) => {
@@ -42,7 +33,26 @@ class ProcessManager {
             return
         }
         kill(this.queue[youtubeId].pid, "SIGINT", (err) => {
-            console.error(err)
+            if (err){
+                console.error(err)
+            }
+            ps.lookup({
+                command: "ffmpeg",
+                arguments: `$file:${youtubeId}.mp4`
+            }, (err, results) => {
+                if (err){
+                    console.log(err)
+                    return
+                }
+                console.log(results)
+                results.forEach(result => {
+                    ps.kill(result.pid, "SIGINT", (err) => {
+                        if (err){
+                            console.log(err)
+                        }
+                    })
+                })
+            })
         })
         delete this.queue[youtubeId]
     }

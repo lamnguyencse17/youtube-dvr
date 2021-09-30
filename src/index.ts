@@ -35,9 +35,12 @@ const createWindow = (): void => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-  initProcessManager()
+  const processManager = initProcessManager()
   initYTDL(mainWindow)
   runStateManager()
+  mainWindow.on("close", () => {
+    processManager.killAllProcess()
+  })
 };
 
 // This method will be called when Electron has finished
@@ -49,19 +52,10 @@ app.on('ready', createWindow);
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  const processManager = getProcessManager()
-  processManager.killAllProcess()
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
-
-app.on("quit", () => {
-  const processManager = getProcessManager()
-  if (processManager.countProcess() !== 0){
-    processManager.killAllProcess()
-  }
-})
 
 app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the

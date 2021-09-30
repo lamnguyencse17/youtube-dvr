@@ -40,7 +40,7 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
     const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", "(bestvideo+bestaudio/best)", "--merge-output-format", "mp4", "--continue", "--no-part", "-o", `${youtubeInfo.youtubeId}.mp4`])
     processManager.addToDict(youtubeId, ytdlProcess)
     ytdlProcess.stderr.on('data', function(data) {
-        console.log('stderr: ' + data)
+        // console.log('stderr: ' + data)
         event.reply(RECEIVE_ERROR, data)
     });
     ytdlProcess.stdout.on('data', function(data) {
