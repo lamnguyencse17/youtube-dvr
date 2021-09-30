@@ -1,4 +1,4 @@
-import {GET_YOUTUBE_INFO, RECEIVE_ERROR, RECORDING_STARTED, SET_YOUTUBE_URL} from "../events";
+import {GET_YOUTUBE_INFO, RECEIVE_ERROR, RECORDING_STARTED, SET_YOUTUBE_URL, START_RECORDING} from "../events";
 import {app, IpcMainEvent, ipcMain} from "electron";
 import cp from "child_process"
 import path from "path";
@@ -10,6 +10,7 @@ let window: Electron.BrowserWindow
 
 export const initYTDL = (mainWindow: Electron.BrowserWindow) => {
     ipcMain.on(SET_YOUTUBE_URL, handleSetYoutubeURL)
+    ipcMain.on(START_RECORDING, handleRecording)
     window = mainWindow
 }
 
@@ -34,10 +35,16 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
         return;
     }
     event.reply(GET_YOUTUBE_INFO, youtubeInfo)
-    const {youtubeId} = youtubeInfo
+    recordYoutubeVideo(event, youtubeURL)
+}
+
+const getBinaryPath = () => path.join(binRootPath, "bin", "youtube-dl.exe")
+
+const recordYoutubeVideo = (event: IpcMainEvent, youtubeURL: string) => {
+    const youtubeId = ytdl.getVideoID(youtubeURL)
     const processManager = getProcessManager()
     const ytdlPath = getBinaryPath()
-    const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", "(bestvideo+bestaudio/best)", "--merge-output-format", "mp4", "--continue", "--no-part", "-o", `${youtubeInfo.youtubeId}.mp4`])
+    const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", "(bestvideo+bestaudio/best)", "--merge-output-format", "mp4", "--continue", "--no-part", "-o", `${youtubeId}.mp4`])
     processManager.addToDict(youtubeId, ytdlProcess)
     ytdlProcess.stderr.on('data', function(data) {
         // console.log('stderr: ' + data)
@@ -49,7 +56,9 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
     window.webContents.send(RECORDING_STARTED, youtubeId)
 }
 
-const getBinaryPath = () => path.join(binRootPath, "bin", "youtube-dl.exe")
+const handleRecording = (event: IpcMainEvent, youtubeURL: string) => {
+    recordYoutubeVideo(event, youtubeURL)
+}
 
 const getYoutubeInfo = async (youtubeURL: string): Promise<YoutubeInfo> => {
     const youtubeInfo = await ytdl.getBasicInfo(youtubeURL)

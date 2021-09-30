@@ -23,11 +23,13 @@ class ProcessManager {
     removeFromDict = (youtubeId: string) => {
         delete this.queue[youtubeId]
     }
-    killAllProcess = () => {
+    killAllProcess = () => new Promise<void>((resolve, _) => {
         Object.keys(this.queue).forEach(key => {
             this.killProcess(key)
         })
-    }
+        resolve()
+    })
+
     killProcess = (youtubeId: string) => {
         if (this.queue[youtubeId].killed){
             return

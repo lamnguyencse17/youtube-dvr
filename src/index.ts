@@ -38,8 +38,8 @@ const createWindow = (): void => {
   const processManager = initProcessManager()
   initYTDL(mainWindow)
   runStateManager()
-  mainWindow.on("close", () => {
-    processManager.killAllProcess()
+  mainWindow.on("close", (event) => {
+
   })
 };
 
@@ -53,7 +53,10 @@ app.on('ready', createWindow);
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit();
+    const processManager = getProcessManager()
+    processManager.killAllProcess().then(() => {
+      app.quit();
+    })
   }
 });
 
