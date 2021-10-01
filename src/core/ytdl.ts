@@ -35,13 +35,12 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
         return;
     }
     event.reply(GET_YOUTUBE_INFO, youtubeInfo)
-    recordYoutubeVideo(event, youtubeURL)
 }
 
 const getBinaryPath = () => path.join(binRootPath, "bin", "youtube-dl.exe")
 
-const recordYoutubeVideo = (event: IpcMainEvent, youtubeURL: string) => {
-    const youtubeId = ytdl.getVideoID(youtubeURL)
+const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string) => {
+    const youtubeURL = `https://www.youtube.com/watch?v=${youtubeId}`
     const processManager = getProcessManager()
     const ytdlPath = getBinaryPath()
     const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", "(bestvideo+bestaudio/best)", "--merge-output-format", "mp4", "--continue", "--no-part", "-o", `${youtubeId}.mp4`])
@@ -56,8 +55,8 @@ const recordYoutubeVideo = (event: IpcMainEvent, youtubeURL: string) => {
     window.webContents.send(RECORDING_STARTED, youtubeId)
 }
 
-const handleRecording = (event: IpcMainEvent, youtubeURL: string) => {
-    recordYoutubeVideo(event, youtubeURL)
+const handleRecording = (event: IpcMainEvent, youtubeId: string) => {
+    recordYoutubeVideo(event, youtubeId)
 }
 
 const getYoutubeInfo = async (youtubeURL: string): Promise<YoutubeInfo> => {

@@ -91,3 +91,5 @@ out/
 .idea/
 
 *.mp4
+
+*.exe

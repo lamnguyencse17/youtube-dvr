@@ -5,7 +5,7 @@ import {useAppDispatch, useAppSelector} from "../../hooks";
 import {toggleShowingLiveChat} from "../../reducers/configs";
 import {styled} from "@mui/material/styles";
 import {YoutubeInfo} from "../../core/ytdl";
-import {stopRecording} from "../../reducers/tabs";
+import {startRecording, stopRecording} from "../../reducers/tabs";
 
 interface UtilProps {
     isLive: boolean
@@ -43,6 +43,10 @@ const Util = ({isLive}: UtilProps) => {
         const youtubeId = location.pathname.split("/")[2]
         dispatch(stopRecording(youtubeId))
     }
+    const handleStartRecording = () => {
+        const youtubeId = location.pathname.split("/")[2]
+        dispatch(startRecording(youtubeId))
+    }
     const renderRecordingButton = () => {
         if (!isAtPlayer || !currentTab){
             return <></>
@@ -51,7 +55,7 @@ const Util = ({isLive}: UtilProps) => {
         if (currentTab.isRecording){
             return <StopRecordingButton onClick={handleStopRecording}>Stop Recording</StopRecordingButton>
         }
-        return <StartRecordingButton>Start Recording</StartRecordingButton>
+        return <StartRecordingButton onClick={handleStartRecording}>Start Recording</StartRecordingButton>
     }
 
     const handleToggleLiveChat = () => {

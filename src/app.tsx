@@ -8,12 +8,12 @@ import {ThemeProvider} from "@mui/material";
 import {useEffect, useState} from "react";
 import {LOAD_STATE, RECEIVE_ERROR, RECORDING_STARTED, UNLOAD_WEB} from "./events";
 const { ipcRenderer } = window.require('electron');
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import Player from "./components/Player";
 import {Provider} from "react-redux";
 import {RootState, store} from "./store";
 import {useAppDispatch} from "./hooks";
-import {replaceTabState, setRecording} from "./reducers/tabs";
+import {replaceTabState} from "./reducers/tabs";
 import {replaceConfigState} from "./reducers/configs";
 
 const App = () => {
@@ -22,10 +22,6 @@ const App = () => {
     useEffect(() => {
         ipcRenderer.on(RECEIVE_ERROR, (event, err: string) => {
             console.log(err)
-            // toast(err);
-        })
-        ipcRenderer.on(RECORDING_STARTED, (event, youtubeId: string) => {
-            dispatch(setRecording({youtubeId, recordingStatus: true}))
         })
         ipcRenderer.send(LOAD_STATE)
         ipcRenderer.on(LOAD_STATE, (event, newState: RootState) => {
