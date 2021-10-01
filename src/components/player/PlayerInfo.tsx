@@ -10,12 +10,17 @@ const LiveChip = styled(Chip)`
 `
 
 const ArchiveChip = styled(Chip)`
-  background-color: #e2467a;
+  background-color: gray;
   color: white;
 `
 
 const VideoChip = styled(Chip)`
   background-color: black;
+  color: white;
+`
+
+const RecordingChip = styled(Chip)`
+  background-color: #e2467a;
   color: white;
 `
 
@@ -38,6 +43,7 @@ const PlayerInfo = () => {
             <h1>{title}</h1>
             <div className={"flex flex-row"}>
                 {renderChip(isLiveNow, isLiveContent)}
+                {currentTab.isRecording && <RecordingChip label={"Recoding"}/>}
             </div>
         </div>
     }

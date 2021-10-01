@@ -13,11 +13,10 @@ const Player = () => {
     const { youtubeId } = useParams<YoutubeIdParams>();
     useEffect(() => {
         dispatch(startRecording(youtubeId))
-    })
+    }, [])
     const {isShowingLiveChat} = useAppSelector(state => state.configs)
     if (isShowingLiveChat) {
         return <div className={"mx-auto flex flex-col w-full mt-2 h-full"}>
-            {youtubeId === "" ? <></> : <PlayerInfo />}
             {youtubeId === "" ? <></> : <div className={"flex flex-row h-full"}>
                 <webview
                     src={`https://www.youtube.com/embed/${youtubeId}`} title="YouTube video player"
@@ -30,16 +29,17 @@ const Player = () => {
                     style={{width: "20%", height: "100%"}}
                 />
             </div>}
+            {youtubeId === "" ? <></> : <PlayerInfo />}
         </div>
     }
-    return <div className={"mx-auto flex flex-col w-full mt-16 h-full"}>
+    return <div className={"mx-auto flex flex-col w-full mt-2 h-full"}>
         {youtubeId === "" ? <></> : <>
-            <PlayerInfo/>
             <webview
                 src={`https://www.youtube.com/embed/${youtubeId}`} title="YouTube video player"
                 allowFullScreen
                 style={{width: "100%", height: "80%"}}
             />
+            <PlayerInfo/>
         </>}
     </div>
 
