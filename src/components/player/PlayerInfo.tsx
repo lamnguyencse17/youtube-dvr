@@ -1,8 +1,7 @@
 import React from "react"
-import {useAppSelector} from "../../hooks";
-import {getLiveTab} from "../../utils/tabs";
 import Chip from '@mui/material/Chip';
 import {styled} from "@mui/material/styles";
+import {YoutubeInfo} from "../../core/ytdl";
 
 const LiveChip = styled(Chip)`
   background-color: red;
@@ -34,9 +33,11 @@ const renderChip = (isLiveNow: boolean, isLiveContent: boolean) => {
     return <VideoChip label={"Video"}/>
 }
 
-const PlayerInfo = () => {
-    const {tabs, activeTab} = useAppSelector(state => state.tabs)
-    const currentTab = getLiveTab(tabs, activeTab)
+interface PlayerInfoProps {
+    currentTab: YoutubeInfo
+}
+
+const PlayerInfo = ({currentTab}: PlayerInfoProps) => {
     if (currentTab){
         const {isLiveNow, isLiveContent, title} = currentTab
         return <div className={"flex flex-col"}>

@@ -1,4 +1,11 @@
-import {GET_YOUTUBE_INFO, RECEIVE_ERROR, RECORDING_STARTED, SET_YOUTUBE_URL, START_RECORDING} from "../events";
+import {
+    COMING_LOG,
+    GET_YOUTUBE_INFO,
+    RECEIVE_ERROR,
+    RECORDING_STARTED,
+    SET_YOUTUBE_URL,
+    START_RECORDING
+} from "../events";
 import {app, IpcMainEvent, ipcMain} from "electron";
 import cp from "child_process"
 import path from "path";
@@ -45,8 +52,12 @@ const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string) => {
     const ytdlPath = getBinaryPath()
     const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", "(bestvideo+bestaudio/best)", "--merge-output-format", "mp4", "--continue", "--hls-use-mpegts", "--no-part", "-o", `${youtubeId}.mp4`])
     processManager.addToDict(youtubeId, ytdlProcess)
-    ytdlProcess.stderr.on('data', function(data) {
-        event.reply(RECEIVE_ERROR, data)
+    ytdlProcess.stderr.on('data', function(data: string) {
+        if (data.includes("ERROR")){
+            event.reply(RECEIVE_ERROR, data)
+            return
+        }
+        event.reply(COMING_LOG, data)
     });
     ytdlProcess.stdout.on('data', function(data) {
         console.log('stdout: ' + data);

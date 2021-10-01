@@ -6,7 +6,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 const { ipcRenderer } = window.require('electron');
 import {GET_YOUTUBE_INFO, SET_YOUTUBE_URL} from "../events";
 import {useHistory} from "react-router-dom";
-import {addTab} from "../reducers/tabs";
+import {addTab, startRecording} from "../reducers/tabs";
 import {useAppDispatch} from "../hooks";
 import {YoutubeInfo} from "../core/ytdl";
 
@@ -23,12 +23,19 @@ const Home = () => {
         setYoutubeURL(e.target.value)
     }
 
-    const handleProcessYoutubeURL = () => {
+    const handleProcessYoutubeURL = (isRecording: boolean) => {
         setSpinner(true)
         ipcRenderer.send(SET_YOUTUBE_URL, youtubeURL)
         ipcRenderer.once(GET_YOUTUBE_INFO, (event, youtubeInfo: YoutubeInfo) => {
+            const modifiedYoutubeInfo = {
+                ...youtubeInfo,
+                isRecording
+            }
+            dispatch(addTab(modifiedYoutubeInfo))
             setSpinner(false)
-            dispatch(addTab(youtubeInfo))
+            if (isRecording){
+                dispatch(startRecording(youtubeInfo.youtubeId))
+            }
             history.push(`/player/${youtubeInfo.youtubeId}`)
         })
     }
@@ -36,7 +43,14 @@ const Home = () => {
         <div className={"mx-auto flex flex-col w-10/12 mt-16 space-y-5 h-1/4"}>
             <h1 className={"text-3xl font-extrabold text-center"}>Enter a Youtube URL and start recording!</h1>
             <UrlInput id="youtube-url" label="A cool You-URL-tube" variant="filled" onChange={handleSetYoutubeURL}/>
-            <Button variant="contained" onClick={handleProcessYoutubeURL}>Start!</Button>
+            <div className={"grid grid-cols-2"}>
+                <Button variant="contained" onClick={() => {
+                    handleProcessYoutubeURL(false)
+                }}>Start Watching</Button>
+                <Button variant="contained" onClick={() => {
+                    handleProcessYoutubeURL(true)
+                }}>Start Recording And Watching</Button>
+            </div>
             {isShowingSpinner && <div className={"mx-auto"}>
                 <CircularProgress/>
             </div>}

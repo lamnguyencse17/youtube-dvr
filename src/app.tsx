@@ -6,22 +6,26 @@ import TopBar from "./components/common/TopBar";
 import theme from "./theme";
 import {ThemeProvider} from "@mui/material";
 import {useEffect, useState} from "react";
-import {LOAD_STATE, RECEIVE_ERROR, RECORDING_STARTED, UNLOAD_WEB} from "./events";
+import {COMING_LOG, LOAD_STATE, RECEIVE_ERROR, UNLOAD_WEB} from "./events";
 const { ipcRenderer } = window.require('electron');
-import { ToastContainer } from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
 import Player from "./components/Player";
 import {Provider} from "react-redux";
 import {RootState, store} from "./store";
 import {useAppDispatch} from "./hooks";
 import {replaceTabState} from "./reducers/tabs";
 import {replaceConfigState} from "./reducers/configs";
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
     const [unloadCalled, setUnload] = useState(false)
     const dispatch = useAppDispatch()
     useEffect(() => {
         ipcRenderer.on(RECEIVE_ERROR, (event, err: string) => {
-            console.log(err)
+            toast(err)
+        })
+        ipcRenderer.on(COMING_LOG, (event, logData: string) => {
+            console.log(logData)
         })
         ipcRenderer.send(LOAD_STATE)
         ipcRenderer.on(LOAD_STATE, (event, newState: RootState) => {
