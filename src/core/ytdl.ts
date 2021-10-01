@@ -43,7 +43,7 @@ const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string) => {
     const youtubeURL = `https://www.youtube.com/watch?v=${youtubeId}`
     const processManager = getProcessManager()
     const ytdlPath = getBinaryPath()
-    const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", "(bestvideo+bestaudio/best)", "--merge-output-format", "mp4", "--continue", "--no-part", "-o", `${youtubeId}.mp4`])
+    const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", "(bestvideo+bestaudio/best)", "--merge-output-format", "mp4", "--continue", "--hls-use-mpegts", "--no-part", "-o", `${youtubeId}.mp4`])
     processManager.addToDict(youtubeId, ytdlProcess)
     ytdlProcess.stderr.on('data', function(data) {
         // console.log('stderr: ' + data)

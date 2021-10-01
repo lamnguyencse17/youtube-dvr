@@ -1,6 +1,6 @@
 import cp from "child_process"
 import kill from "tree-kill"
-import ps from "ps-node"
+import find from "find-process"
 import {ipcMain} from "electron";
 import {STOP_RECORDING} from "../events";
 
@@ -35,28 +35,41 @@ class ProcessManager {
             return
         }
         kill(this.queue[youtubeId].pid, "SIGINT", (err) => {
+            delete this.queue[youtubeId]
             if (err){
                 console.error(err)
+                return
             }
-            ps.lookup({
-                command: "ffmpeg",
-                arguments: `$file:${youtubeId}.mp4`
-            }, (err, results) => {
-                if (err){
-                    console.log(err)
-                    return
+            find("name", "ffmpeg").then((results) => {
+                if (!results.length){
+                    return;
                 }
-                console.log(results)
                 results.forEach(result => {
-                    ps.kill(result.pid, "SIGINT", (err) => {
-                        if (err){
-                            console.log(err)
-                        }
-                    })
+                    console.log(results)
+                    if (result.cmd.includes(youtubeId)){
+                        console.log("TARGET FOUND TO BE TERMINATED")
+                        kill(result.pid, "SIGNINT")
+                    }
                 })
             })
+            // ps.lookup({
+            //     command: "ffmpeg",
+            //     arguments: `$file:${youtubeId}.mp4`
+            // }, (err, results) => {
+            //     if (err){
+            //         console.log(err)
+            //         return
+            //     }
+            //     console.log(results)
+            //     results.forEach(result => {
+            //         ps.kill(result.pid, "SIGINT", (err) => {
+            //             if (err){
+            //                 console.log(err)
+            //             }
+            //         })
+            //     })
+            // })
         })
-        delete this.queue[youtubeId]
     }
     countProcess = (): number => {
         return Object.keys(this.queue).length
