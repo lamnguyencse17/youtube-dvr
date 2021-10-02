@@ -8,6 +8,7 @@ import {useHistory} from "react-router-dom";
 import {addTab, startRecording} from "../reducers/tabs";
 import {useAppDispatch} from "../hooks";
 import {YoutubeInfo} from "../core/ytdl";
+import RecordModal from "./common/RecordModal";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -28,19 +29,26 @@ const Home = () => {
     const inputFile = useRef<HTMLInputElement | null>(null);
     const [youtubeURL, setYoutubeURL] = useState("")
     const [isShowingSpinner, setSpinner] = useState(false)
+    const [isRecordModalOpen, setRecordModalOpen] = useState(false)
+    const handleCloseRecordModal = () => {
+        setRecordModalOpen(false)
+    }
+    const handleOpenRecordModal = () => {
+        setRecordModalOpen(true)
+    }
     const handleSetYoutubeURL = (e: React.ChangeEvent<HTMLInputElement>) => {
         setYoutubeURL(e.target.value)
     }
-    const handleRecordingButton = async () => {
-        const youtubeInfo = await getYoutubeInfo(youtubeURL)
-        const defaultFileName = youtubeInfo.title + ".mp4"
-        ipcRenderer.send(SAVE_FILE_PATH, defaultFileName)
-        ipcRenderer.once(SAVE_FILE_PATH, (event, filePath) => {
-            dispatch(addTab({...youtubeInfo, isRecording: true}))
-            dispatch(startRecording({youtubeId: youtubeInfo.youtubeId, filePath}))
-            history.push(`/player/${youtubeInfo.youtubeId}`)
-        })
-    };
+    // const handleRecordingButton = async () => {
+    //     const youtubeInfo = await getYoutubeInfo(youtubeURL)
+    //     const defaultFileName = youtubeInfo.title + ".mp4"
+    //     ipcRenderer.send(SAVE_FILE_PATH, defaultFileName)
+    //     ipcRenderer.once(SAVE_FILE_PATH, (event, filePath) => {
+    //         dispatch(addTab({...youtubeInfo, isRecording: true}))
+    //         dispatch(startRecording({youtubeId: youtubeInfo.youtubeId, filePath}))
+    //         history.push(`/player/${youtubeInfo.youtubeId}`)
+    //     })
+    // };
     const handleWatchYoutube = async () => {
         setSpinner(true)
         const youtubeInfo = await getYoutubeInfo(youtubeURL)
@@ -53,9 +61,11 @@ const Home = () => {
             <UrlInput id="youtube-url" label="A cool You-URL-tube" variant="filled" onChange={handleSetYoutubeURL}/>
             <div className={"grid grid-cols-2"}>
                 <Button variant="contained" onClick={handleWatchYoutube}>Start Watching</Button>
-                <Button variant="contained" onClick={handleRecordingButton}>Start Recording And Watching</Button>
+                <Button variant="contained" onClick={handleOpenRecordModal}>Start Recording And Watching</Button>
             </div>
             <input type='file' id='file' ref={inputFile} style={{display: 'none'}}/>
+            <RecordModal isRecordModalOpen={isRecordModalOpen} handleCloseRecordModal={handleCloseRecordModal}
+                         youtubeURL={youtubeURL} getYoutubeInfo={getYoutubeInfo}/>
             {isShowingSpinner && <div className={"mx-auto"}>
                 <CircularProgress/>
             </div>}
