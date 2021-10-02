@@ -55,7 +55,7 @@ const Home = () => {
             </div>
             <input type='file' id='file' ref={inputFile} style={{display: 'none'}}/>
             <RecordModal isRecordModalOpen={isRecordModalOpen} handleCloseRecordModal={handleCloseRecordModal}
-                         youtubeURL={youtubeURL} getYoutubeInfo={getYoutubeInfo}/>
+                         youtubeURL={youtubeURL} getYoutubeInfo={getYoutubeInfo} isAtHome={true}/>
             {isShowingSpinner && <div className={"mx-auto"}>
                 <CircularProgress/>
             </div>}

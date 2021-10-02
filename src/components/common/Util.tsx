@@ -82,7 +82,7 @@ const Util = ({isLive}: UtilProps) => {
             <ToggleChatButton onClick={handleToggleLiveChat} color={"primary"} variant={"outlined"}>Toggle Live
                 Chat</ToggleChatButton>
             {renderRecordingButton()}
-            <RecordModal isRecordModalOpen={isRecordModalOpen} handleCloseRecordModal={handleCloseRecordModal} youtubeURL={`https://www.youtube.com/watch?v=${currentTab.youtubeId}`} getYoutubeInfo={getYoutubeInfo}/>
+            <RecordModal isRecordModalOpen={isRecordModalOpen} handleCloseRecordModal={handleCloseRecordModal} youtubeURL={`https://www.youtube.com/watch?v=${currentTab.youtubeId}`} getYoutubeInfo={getYoutubeInfo} isAtHome={false}/>
         </div>
     }
     return <></>

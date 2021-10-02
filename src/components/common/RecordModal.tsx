@@ -51,12 +51,13 @@ width: 100%
 
 interface RecordModalProps {
     isRecordModalOpen: boolean;
-    handleCloseRecordModal: React.Dispatch<React.SetStateAction<null>>;
+    handleCloseRecordModal: () => void
     youtubeURL: string;
     getYoutubeInfo: (youtubeURL: string) => Promise<YoutubeInfo>
+    isAtHome: boolean
 }
 
-const RecordModal = ({isRecordModalOpen, handleCloseRecordModal, youtubeURL, getYoutubeInfo}: RecordModalProps) => {
+const RecordModal = ({isRecordModalOpen, handleCloseRecordModal, youtubeURL, getYoutubeInfo, isAtHome}: RecordModalProps) => {
     const dispatch = useAppDispatch()
     const history = useHistory()
     const [quality, setQuality] = useState("1080")
@@ -77,8 +78,11 @@ const RecordModal = ({isRecordModalOpen, handleCloseRecordModal, youtubeURL, get
     const handleRecordButton = async () => {
         dispatch(addTab({...youtubeInfo, isRecording: true}))
         dispatch(startRecording({youtubeId: youtubeInfo.youtubeId, filePath: path}))
-        //TODO: check route to avoid weird reload
-        history.push(`/player/${youtubeInfo.youtubeId}`)
+        if (isAtHome){
+            history.push(`/player/${youtubeInfo.youtubeId}`)
+            return;
+        }
+        handleCloseRecordModal()
     }
     return (
         <Modal open={isRecordModalOpen} onClose={handleCloseRecordModal}>
