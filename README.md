@@ -14,3 +14,11 @@ This repo is the source code for the software with the same name allowing you to
 ## What's not working:
 - Sometimes youtube-dl will act weird throw out weird error, just press stop recording and start again!
 - Annoying dev tool will pop up because I am lazy 😄 Could be helpful if you want me to solve some weird bugs. 
+
+## Roadmap:
+1. Quality selection
+2. Download info
+3. Youtube info: channel name, subscriber(dunno), description
+4. Timestamp save
+5. Cut archive from timestamp
+6. Holodex LiveTL (For hololive fans)
