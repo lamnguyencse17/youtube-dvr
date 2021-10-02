@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import type { RootState } from '../store'
+import type {RootState} from '../store'
 
 interface Configs {
     isShowingLiveChat: boolean
@@ -11,7 +11,7 @@ let initialState: Configs = {
 
 const persistedState = JSON.parse(localStorage.getItem("REDUX"))
 
-if (persistedState){
+if (persistedState) {
     initialState = persistedState.configs
 }
 
@@ -23,13 +23,13 @@ export const configSlice = createSlice({
             state.isShowingLiveChat = !state.isShowingLiveChat
         },
         replaceConfigState: (state, action: PayloadAction<Configs>) => {
-            if (action.payload != null){
+            if (action.payload != null) {
                 state = {...action.payload}
             }
         }
     }
 })
 
-export const { toggleShowingLiveChat, replaceConfigState } = configSlice.actions
+export const {toggleShowingLiveChat, replaceConfigState} = configSlice.actions
 export const selectConfigReducer = (state: RootState) => state.configs
 export default configSlice.reducer

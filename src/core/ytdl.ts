@@ -6,7 +6,7 @@ import {
     SET_YOUTUBE_URL,
     START_RECORDING
 } from "../events";
-import {app, IpcMainEvent, ipcMain} from "electron";
+import {app, ipcMain, IpcMainEvent} from "electron";
 import cp from "child_process"
 import path from "path";
 import ytdl from "ytdl-core"
@@ -42,7 +42,7 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
     let youtubeInfo: YoutubeInfo
     try {
         youtubeInfo = await getYoutubeInfo(youtubeURL)
-    } catch(err) {
+    } catch (err) {
         event.reply(RECEIVE_ERROR, err)
         return;
     }
@@ -57,14 +57,14 @@ const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string, filePath: st
     const ytdlPath = getBinaryPath()
     const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", "(bestvideo+bestaudio/best)", "--merge-output-format", "mp4", "--continue", "--hls-use-mpegts", "--no-part", "-o", filePath])
     processManager.addToDict(youtubeId, ytdlProcess)
-    ytdlProcess.stderr.on('data', function(data: string) {
-        if (data.includes("ERROR")){
+    ytdlProcess.stderr.on('data', function (data: string) {
+        if (data.includes("ERROR")) {
             event.reply(RECEIVE_ERROR, data)
             return
         }
         event.reply(COMING_LOG, data)
     });
-    ytdlProcess.stdout.on('data', function(data) {
+    ytdlProcess.stdout.on('data', function (data) {
         console.log('stdout: ' + data);
     });
     window.webContents.send(RECORDING_STARTED, youtubeId)
@@ -76,7 +76,14 @@ const handleRecording = (event: IpcMainEvent, {youtubeId, filePath}: StartRecord
 
 const getYoutubeInfo = async (youtubeURL: string): Promise<YoutubeInfo> => {
     const youtubeInfo = await ytdl.getBasicInfo(youtubeURL)
-    const {videoId: youtubeId, ownerChannelName: channelName, channelId, description, isLiveContent, title} = youtubeInfo.videoDetails
+    const {
+        videoId: youtubeId,
+        ownerChannelName: channelName,
+        channelId,
+        description,
+        isLiveContent,
+        title
+    } = youtubeInfo.videoDetails
     const {isLiveNow, startTimestamp} = youtubeInfo.videoDetails.liveBroadcastDetails
     return {
         title,

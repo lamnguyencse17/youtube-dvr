@@ -24,10 +24,10 @@ const RecordingChip = styled(Chip)`
 `
 
 const renderChip = (isLiveNow: boolean, isLiveContent: boolean) => {
-    if (isLiveContent && isLiveNow){
+    if (isLiveContent && isLiveNow) {
         return <LiveChip label={"Live"}/>
     }
-    if (isLiveContent && !isLiveNow){
+    if (isLiveContent && !isLiveNow) {
         return <ArchiveChip label={"Archive"}/>
     }
     return <VideoChip label={"Video"}/>
@@ -38,7 +38,7 @@ interface PlayerInfoProps {
 }
 
 const PlayerInfo = ({currentTab}: PlayerInfoProps) => {
-    if (currentTab){
+    if (currentTab) {
         const {isLiveNow, isLiveContent, title} = currentTab
         return <div className={"flex flex-col"}>
             <h1>{title}</h1>

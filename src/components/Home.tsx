@@ -3,12 +3,13 @@ import TextField from "@mui/material/TextField";
 import {styled} from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CircularProgress from '@mui/material/CircularProgress';
-const { ipcRenderer } = window.require('electron');
 import {GET_YOUTUBE_INFO, SAVE_FILE_PATH, SET_YOUTUBE_URL} from "../events";
 import {useHistory} from "react-router-dom";
 import {addTab, startRecording} from "../reducers/tabs";
 import {useAppDispatch} from "../hooks";
 import {YoutubeInfo} from "../core/ytdl";
+
+const {ipcRenderer} = window.require('electron');
 
 const UrlInput = styled(TextField)`
   width: 100%;

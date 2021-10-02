@@ -10,20 +10,22 @@ export const runStateManager = () => {
         writeState(state)
     })
     ipcMain.on(LOAD_STATE, (event) => {
-        setTimeout(() => {loadState(event)}, 5000)
+        setTimeout(() => {
+            loadState(event)
+        }, 5000)
     })
 }
 
 const writeState = (state: RootState) => {
     isWriting = true
     const stateFileExists = fs.existsSync("state.json")
-    if (stateFileExists){
+    if (stateFileExists) {
         fs.rm("state.json", (err) => {
-            if (err){
+            if (err) {
                 console.log("REMOVE: ", err)
             }
             fs.writeFile("state.json", JSON.stringify(state), (err) => {
-                if (err){
+                if (err) {
                     console.log("WRITE ERROR: ", err)
                 }
                 isWriting = false
@@ -33,9 +35,10 @@ const writeState = (state: RootState) => {
 }
 
 const loadState = (event: IpcMainEvent) => {
-    while (isWriting){}
+    while (isWriting) {
+    }
     fs.readFile("state.json", (err, data) => {
-        if (err){
+        if (err) {
             console.log("READ ERROR: ", err)
             event.reply(LOAD_STATE, null)
             return

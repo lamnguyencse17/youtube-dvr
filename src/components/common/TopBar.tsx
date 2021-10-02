@@ -30,12 +30,12 @@ const TopBar = () => {
                 edge="start"
                 color="inherit"
                 aria-label="menu"
-                sx={{ mr: 2 }}
+                sx={{mr: 2}}
                 onClick={toggleDrawer}
             >
-                <MenuIcon />
+                <MenuIcon/>
             </IconButton>
-            <Link component={RouterLink} to={"/"} style={{ textDecoration: 'none' }}>
+            <Link component={RouterLink} to={"/"} style={{textDecoration: 'none'}}>
                 <div className={"text-white text-xl font-bold"}>Youtube DVR</div>
             </Link>
             <Util isLive={isLive}/>
@@ -51,7 +51,7 @@ const TopBar = () => {
                     <Link component={RouterLink} to={`/player/${youtubeId}`}>
                         {title}
                     </Link>
-                    </div>)
+                </div>)
                 }
             </div>
         </CustomDrawer>

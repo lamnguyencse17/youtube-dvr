@@ -1,22 +1,24 @@
 import cp from "child_process"
 import kill from "tree-kill"
-import find from "find-process"
 import {ipcMain} from "electron";
 import {STOP_RECORDING} from "../events";
 
-type ProcessDict = {[key: string]: cp.ChildProcess}
+type ProcessDict = { [key: string]: cp.ChildProcess }
 
 class ProcessManager {
     queue: ProcessDict
+
     constructor() {
         this.queue = {}
         ipcMain.on(STOP_RECORDING, (event, youtubeId: string) => {
             this.killProcess(youtubeId)
         })
     }
+
     addToDict = (youtubeId: string, process: cp.ChildProcess) => {
-        if (this.queue[youtubeId] !== undefined){
-            throw "This process exists"
+        if (this.queue[youtubeId] !== undefined) {
+            delete this.queue[youtubeId]
+            this.killProcess(youtubeId)
         }
         this.queue[youtubeId] = process
     }
@@ -31,44 +33,15 @@ class ProcessManager {
     })
 
     killProcess = (youtubeId: string) => {
-        if (this.queue[youtubeId].killed){
+        if (this.queue[youtubeId].killed) {
             return
         }
         kill(this.queue[youtubeId].pid, "SIGINT", (err) => {
             delete this.queue[youtubeId]
-            if (err){
+            if (err) {
                 console.error(err)
                 return
             }
-            find("name", "ffmpeg").then((results) => {
-                if (!results.length){
-                    return;
-                }
-                results.forEach(result => {
-                    console.log(results)
-                    if (result.cmd.includes(youtubeId)){
-                        console.log("TARGET FOUND TO BE TERMINATED")
-                        kill(result.pid, "SIGNINT")
-                    }
-                })
-            })
-            // ps.lookup({
-            //     command: "ffmpeg",
-            //     arguments: `$file:${youtubeId}.mp4`
-            // }, (err, results) => {
-            //     if (err){
-            //         console.log(err)
-            //         return
-            //     }
-            //     console.log(results)
-            //     results.forEach(result => {
-            //         ps.kill(result.pid, "SIGINT", (err) => {
-            //             if (err){
-            //                 console.log(err)
-            //             }
-            //         })
-            //     })
-            // })
         })
     }
     countProcess = (): number => {

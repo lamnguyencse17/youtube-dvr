@@ -6,8 +6,9 @@ import {toggleShowingLiveChat} from "../../reducers/configs";
 import {styled} from "@mui/material/styles";
 import {YoutubeInfo} from "../../core/ytdl";
 import {startRecording, stopRecording} from "../../reducers/tabs";
-const { ipcRenderer } = window.require('electron');
 import {SAVE_FILE_PATH} from "../../events";
+
+const {ipcRenderer} = window.require('electron');
 
 interface UtilProps {
     isLive: boolean
@@ -37,7 +38,7 @@ const Util = ({isLive}: UtilProps) => {
     const isAtPlayer = location.pathname.includes("player")
     const tabState = useAppSelector(state => state.tabs)
     let currentTab: YoutubeInfo
-    if (tabState.activeTab !== "home"){
+    if (tabState.activeTab !== "home") {
         const youtubeId = location.pathname.split("/")[2]
         currentTab = tabState.tabs.find(tab => tab.youtubeId === youtubeId)
     }
@@ -46,19 +47,19 @@ const Util = ({isLive}: UtilProps) => {
         dispatch(stopRecording(youtubeId))
     }
     const handleStartRecording = async () => {
-            const youtubeId = location.pathname.split("/")[2]
-            const defaultFileName = tabState.activeTab + ".mp4"
-            ipcRenderer.send(SAVE_FILE_PATH, defaultFileName)
-            ipcRenderer.once(SAVE_FILE_PATH, (event, filePath) => {
-                dispatch(startRecording({youtubeId, filePath}))
-            })
+        const youtubeId = location.pathname.split("/")[2]
+        const defaultFileName = tabState.activeTab + ".mp4"
+        ipcRenderer.send(SAVE_FILE_PATH, defaultFileName)
+        ipcRenderer.once(SAVE_FILE_PATH, (event, filePath) => {
+            dispatch(startRecording({youtubeId, filePath}))
+        })
     }
     const renderRecordingButton = () => {
-        if (!isAtPlayer || !currentTab){
+        if (!isAtPlayer || !currentTab) {
             return <></>
         }
 
-        if (currentTab.isRecording){
+        if (currentTab.isRecording) {
             return <StopRecordingButton onClick={handleStopRecording}>Stop Recording</StopRecordingButton>
         }
         return <StartRecordingButton onClick={handleStartRecording}>Start Recording</StartRecordingButton>
@@ -67,9 +68,10 @@ const Util = ({isLive}: UtilProps) => {
     const handleToggleLiveChat = () => {
         dispatch(toggleShowingLiveChat())
     }
-    if (isAtPlayer && isLive){
+    if (isAtPlayer && isLive) {
         return <div className={"ml-auto flex flex-row"}>
-            <ToggleChatButton onClick={handleToggleLiveChat} color={"primary"} variant={"outlined"}>Toggle Live Chat</ToggleChatButton>
+            <ToggleChatButton onClick={handleToggleLiveChat} color={"primary"} variant={"outlined"}>Toggle Live
+                Chat</ToggleChatButton>
             {renderRecordingButton()}
         </div>
     }

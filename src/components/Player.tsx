@@ -9,7 +9,7 @@ interface YoutubeIdParams {
 }
 
 const Player = () => {
-    const { youtubeId } = useParams<YoutubeIdParams>();
+    const {youtubeId} = useParams<YoutubeIdParams>();
     const {tabs, activeTab} = useAppSelector(state => state.tabs)
     const currentTab = getLiveTab(tabs, activeTab)
     const {isShowingLiveChat} = useAppSelector(state => state.configs)
