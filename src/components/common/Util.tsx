@@ -1,11 +1,13 @@
 import React from 'react';
-import {useLocation, useParams} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import Button from "@mui/material/Button";
 import {useAppDispatch, useAppSelector} from "../../hooks";
 import {toggleShowingLiveChat} from "../../reducers/configs";
 import {styled} from "@mui/material/styles";
 import {YoutubeInfo} from "../../core/ytdl";
 import {startRecording, stopRecording} from "../../reducers/tabs";
+const { ipcRenderer } = window.require('electron');
+import {SAVE_FILE_PATH} from "../../events";
 
 interface UtilProps {
     isLive: boolean
@@ -43,9 +45,13 @@ const Util = ({isLive}: UtilProps) => {
         const youtubeId = location.pathname.split("/")[2]
         dispatch(stopRecording(youtubeId))
     }
-    const handleStartRecording = () => {
-        const youtubeId = location.pathname.split("/")[2]
-        dispatch(startRecording(youtubeId))
+    const handleStartRecording = async () => {
+            const youtubeId = location.pathname.split("/")[2]
+            const defaultFileName = tabState.activeTab + ".mp4"
+            ipcRenderer.send(SAVE_FILE_PATH, defaultFileName)
+            ipcRenderer.once(SAVE_FILE_PATH, (event, filePath) => {
+                dispatch(startRecording({youtubeId, filePath}))
+            })
     }
     const renderRecordingButton = () => {
         if (!isAtPlayer || !currentTab){

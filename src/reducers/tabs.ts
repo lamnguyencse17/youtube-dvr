@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store'
-import {YoutubeInfo} from "../core/ytdl";
+import {StartRecordingPayload, YoutubeInfo} from "../core/ytdl";
 import {START_RECORDING, STOP_RECORDING} from "../events";
 const { ipcRenderer } = window.require('electron');
 
@@ -59,9 +59,9 @@ export const tabSlice = createSlice({
                 isRecording: false
             })
         },
-        startRecording: (state, action: PayloadAction<string>) => {
-            const youtubeId = action.payload
-            ipcRenderer.send(START_RECORDING, youtubeId)
+        startRecording: (state, action: PayloadAction<StartRecordingPayload>) => {
+            const {youtubeId, filePath} = action.payload
+            ipcRenderer.send(START_RECORDING, {youtubeId, filePath})
             Object.assign(state.tabs.find(tab => tab.youtubeId === youtubeId), {
                 isRecording: true
             })
