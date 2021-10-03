@@ -1,7 +1,7 @@
 import {dialog, ipcMain} from "electron"
 import {SAVE_FILE_PATH} from "../events";
 
-const cleanPath = (path: string) => path.toLowerCase().replace(/[^a-zA-Z0-9#.?!@ ]+/g, " ");
+const cleanPath = (path: string) => path.toLowerCase().replace(/[^a-zA-Z0-9#. ]+/g, " ");
 
 export const initFileManager = (mainWindow: Electron.BrowserWindow) => {
     ipcMain.on(SAVE_FILE_PATH, async (event, defaultFilePath: string) => {

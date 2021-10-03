@@ -36,6 +36,7 @@ export type YoutubeInfo = {
 export type StartRecordingPayload = {
     youtubeId: string;
     filePath: string;
+    quality: string;
 }
 
 const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
@@ -51,11 +52,12 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
 
 const getBinaryPath = () => path.join(binRootPath, "bin", "youtube-dl.exe")
 
-const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string, filePath: string) => {
+const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string, quality: string, filePath: string) => {
     const youtubeURL = `https://www.youtube.com/watch?v=${youtubeId}`
     const processManager = getProcessManager()
     const ytdlPath = getBinaryPath()
-    const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", "(bestvideo+bestaudio/best)", "--merge-output-format", "mp4", "--continue", "--hls-use-mpegts", "--no-part", "-o", filePath])
+    console.log(`"best[height=${quality}]/bestvideo+bestaudio/best"`)
+    const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", `best[height=${quality}]/bestvideo+bestaudio/best`, "--merge-output-format", "mp4", "--continue", "--hls-use-mpegts", "--no-part", "-o", filePath])
     processManager.addToDict(youtubeId, ytdlProcess)
     ytdlProcess.stderr.on('data', function (data: string) {
         if (data.includes("ERROR")) {
@@ -70,8 +72,8 @@ const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string, filePath: st
     window.webContents.send(RECORDING_STARTED, youtubeId)
 }
 
-const handleRecording = (event: IpcMainEvent, {youtubeId, filePath}: StartRecordingPayload) => {
-    recordYoutubeVideo(event, youtubeId, filePath)
+const handleRecording = (event: IpcMainEvent, {youtubeId, quality, filePath}: StartRecordingPayload) => {
+    recordYoutubeVideo(event, youtubeId, quality, filePath)
 }
 
 const getYoutubeInfo = async (youtubeURL: string): Promise<YoutubeInfo> => {

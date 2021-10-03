@@ -61,8 +61,8 @@ export const tabSlice = createSlice({
             })
         },
         startRecording: (state, action: PayloadAction<StartRecordingPayload>) => {
-            const {youtubeId, filePath} = action.payload
-            ipcRenderer.send(START_RECORDING, {youtubeId, filePath})
+            const {youtubeId, filePath, quality} = action.payload
+            ipcRenderer.send(START_RECORDING, {youtubeId, filePath, quality})
             Object.assign(state.tabs.find(tab => tab.youtubeId === youtubeId), {
                 isRecording: true
             })

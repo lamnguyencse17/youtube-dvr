@@ -77,7 +77,7 @@ const RecordModal = ({isRecordModalOpen, handleCloseRecordModal, youtubeURL, get
     };
     const handleRecordButton = async () => {
         dispatch(addTab({...youtubeInfo, isRecording: true}))
-        dispatch(startRecording({youtubeId: youtubeInfo.youtubeId, filePath: path}))
+        dispatch(startRecording({youtubeId: youtubeInfo.youtubeId, quality, filePath: path}))
         if (isAtHome){
             history.push(`/player/${youtubeInfo.youtubeId}`)
             return;
