@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import type {RootState} from '../store'
 import {StartRecordingPayload, YoutubeInfo} from "../core/ytdl";
-import {START_RECORDING, STOP_RECORDING} from "../events";
+import {SET_ACTIVE_INFO, START_RECORDING, STOP_RECORDING} from "../events";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -28,6 +28,7 @@ export const tabSlice = createSlice({
             const newTab = action.payload
             state.tabs = [...state.tabs, newTab]
             state.activeTab = newTab.title
+            ipcRenderer.send(SET_ACTIVE_INFO, newTab.youtubeId)
         },
         removeTab: (state, action: PayloadAction<string>) => {
             const youtubeId = action.payload
@@ -47,6 +48,7 @@ export const tabSlice = createSlice({
                 return state
             }
             state.activeTab = youtubeId
+            ipcRenderer.send(SET_ACTIVE_INFO, youtubeId)
         },
         replaceTabState: (state, action: PayloadAction<TabState>) => {
             if (action.payload != null) {

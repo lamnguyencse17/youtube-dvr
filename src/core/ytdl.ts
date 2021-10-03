@@ -57,7 +57,6 @@ const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string, quality: str
     const youtubeURL = `https://www.youtube.com/watch?v=${youtubeId}`
     const processManager = getProcessManager()
     const ytdlPath = getBinaryPath()
-    console.log(`"best[height=${quality}]/bestvideo+bestaudio/best"`)
     const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", `best[height=${quality}]/bestvideo+bestaudio/best`, "--merge-output-format", "mp4", "--continue", "--hls-use-mpegts", "--no-part", "-o", filePath])
     processManager.addToDict(youtubeId, ytdlProcess)
     ytdlProcess.stderr.on('data', function (data: string) {
@@ -65,7 +64,7 @@ const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string, quality: str
             event.reply(RECEIVE_ERROR, data)
             return
         }
-        handleDownloadInfo(data)
+        handleDownloadInfo(data, youtubeId)
         event.reply(COMING_LOG, data)
     });
     ytdlProcess.stdout.on('data', function (data) {
