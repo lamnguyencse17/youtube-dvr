@@ -11,6 +11,7 @@ import cp from "child_process"
 import path from "path";
 import ytdl from "ytdl-core"
 import {getProcessManager} from "./processManager";
+import {handleDownloadInfo} from "./info";
 
 const binRootPath = app.getAppPath();
 let window: Electron.BrowserWindow
@@ -64,6 +65,7 @@ const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string, quality: str
             event.reply(RECEIVE_ERROR, data)
             return
         }
+        handleDownloadInfo(data)
         event.reply(COMING_LOG, data)
     });
     ytdlProcess.stdout.on('data', function (data) {

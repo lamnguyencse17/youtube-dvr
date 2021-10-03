@@ -29,24 +29,26 @@ const ModalBox = styled(Box)`
 const FullHeightTextField = styled(TextField)`
   height: 35px;
   flex-grow: 1;
-  & .MuiTextField-root{
+
+  & .MuiTextField-root {
     height: 100%
   }
-  & .MuiOutlinedInput-root{
+
+  & .MuiOutlinedInput-root {
     height: 100%
   }
-  
-  & .MuiInputLabel-root{
+
+  & .MuiInputLabel-root {
     top: -10px
   }
-  
-  & .MuiTextField-root{
+
+  & .MuiTextField-root {
     margin-left: auto;
   }
 `
 
 const FullWidthSelect = styled(Select)`
-width: 100%
+  width: 100%
 `
 
 interface RecordModalProps {
@@ -57,7 +59,13 @@ interface RecordModalProps {
     isAtHome: boolean
 }
 
-const RecordModal = ({isRecordModalOpen, handleCloseRecordModal, youtubeURL, getYoutubeInfo, isAtHome}: RecordModalProps) => {
+const RecordModal = ({
+                         isRecordModalOpen,
+                         handleCloseRecordModal,
+                         youtubeURL,
+                         getYoutubeInfo,
+                         isAtHome
+                     }: RecordModalProps) => {
     const dispatch = useAppDispatch()
     const history = useHistory()
     const [quality, setQuality] = useState("1080")
@@ -78,7 +86,7 @@ const RecordModal = ({isRecordModalOpen, handleCloseRecordModal, youtubeURL, get
     const handleRecordButton = async () => {
         dispatch(addTab({...youtubeInfo, isRecording: true}))
         dispatch(startRecording({youtubeId: youtubeInfo.youtubeId, quality, filePath: path}))
-        if (isAtHome){
+        if (isAtHome) {
             history.push(`/player/${youtubeInfo.youtubeId}`)
             return;
         }

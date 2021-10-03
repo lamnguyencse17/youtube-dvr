@@ -5,8 +5,7 @@ import {useAppDispatch, useAppSelector} from "../../hooks";
 import {toggleShowingLiveChat} from "../../reducers/configs";
 import {styled} from "@mui/material/styles";
 import {YoutubeInfo} from "../../core/ytdl";
-import {startRecording, stopRecording} from "../../reducers/tabs";
-import {SAVE_FILE_PATH} from "../../events";
+import {stopRecording} from "../../reducers/tabs";
 import RecordModal from "./RecordModal";
 import {getYoutubeInfo} from "../Home";
 
@@ -82,7 +81,9 @@ const Util = ({isLive}: UtilProps) => {
             <ToggleChatButton onClick={handleToggleLiveChat} color={"primary"} variant={"outlined"}>Toggle Live
                 Chat</ToggleChatButton>
             {renderRecordingButton()}
-            <RecordModal isRecordModalOpen={isRecordModalOpen} handleCloseRecordModal={handleCloseRecordModal} youtubeURL={`https://www.youtube.com/watch?v=${currentTab.youtubeId}`} getYoutubeInfo={getYoutubeInfo} isAtHome={false}/>
+            <RecordModal isRecordModalOpen={isRecordModalOpen} handleCloseRecordModal={handleCloseRecordModal}
+                         youtubeURL={`https://www.youtube.com/watch?v=${currentTab.youtubeId}`}
+                         getYoutubeInfo={getYoutubeInfo} isAtHome={false}/>
         </div>
     }
     return <></>
