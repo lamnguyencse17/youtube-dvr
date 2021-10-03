@@ -23,7 +23,7 @@ const RecordingChip = styled(Chip)`
   color: white;
 `
 
-const renderChip = (isLiveNow: boolean, isLiveContent: boolean) => {
+const renderVideoTypeChip = (isLiveNow: boolean, isLiveContent: boolean) => {
     if (isLiveContent && isLiveNow) {
         return <LiveChip label={"Live"}/>
     }
@@ -43,7 +43,7 @@ const PlayerInfo = ({currentTab}: PlayerInfoProps) => {
         return <div className={"flex flex-col"}>
             <h1>{title}</h1>
             <div className={"flex flex-row"}>
-                {renderChip(isLiveNow, isLiveContent)}
+                {renderVideoTypeChip(isLiveNow, isLiveContent)}
                 {currentTab.isRecording && <RecordingChip label={"Recoding"}/>}
             </div>
         </div>
