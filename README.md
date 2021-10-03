@@ -6,6 +6,7 @@ This repo is the source code for the software with the same name allowing you to
 - Start/stop recording youtube video
 - Choose file name and where to save
 - Quality selection
+- Monitor download info (Stats from youtube-dl)
 
 ## Keep in mind:
 - Start and stop recording may or may not override existed (I remember that it will append to the video, hopefully)
@@ -16,6 +17,7 @@ This repo is the source code for the software with the same name allowing you to
   - Best video + Best audio (youtube-dl config)
   - Best (youtube-dl config)
 - There will be no 2K or 4K (for now, hopefully) as most Youtube livestream are at best 1080p
+- The ffmpeg process may (maybe 1 out of 5) sit in the background after exiting (for unknown reason) and should be manually killed
 
 ## What's not working:
 - Sometimes youtube-dl will act weird throw out weird error, just press stop recording and start again!
@@ -23,7 +25,7 @@ This repo is the source code for the software with the same name allowing you to
 
 ## Roadmap:
 1. Quality selection <==== Done
-2. Download info
+2. Download info <==== Done
 3. Youtube info: channel name, subscriber(dunno), description
 4. Timestamp save
 5. Scheduler (it will fetch the livestream time and auto record the stuff)
