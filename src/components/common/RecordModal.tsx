@@ -96,7 +96,7 @@ const RecordModal = ({
         <Modal open={isRecordModalOpen} onClose={handleCloseRecordModal}>
             <ModalBox>
                 <div className={"align-middle flex"}>
-                    <FullHeightTextField label="Outlined" variant="outlined" value={path}/>
+                    <FullHeightTextField label="Path" variant="outlined" value={path}/>
                     <Button variant="contained" onClick={handleBrowseButton}>Browse</Button>
                 </div>
                 <div className={"text-center"}>
