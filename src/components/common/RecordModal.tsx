@@ -77,7 +77,7 @@ const RecordModal = ({
     const handleBrowseButton = async () => {
         const fetchedYoutubeInfo = await getYoutubeInfo(youtubeURL)
         setYoutubeInfo(fetchedYoutubeInfo)
-        const defaultFileName = fetchedYoutubeInfo.title + ".mp4"
+        const defaultFileName = fetchedYoutubeInfo.title
         ipcRenderer.send(SAVE_FILE_PATH, defaultFileName)
         ipcRenderer.once(SAVE_FILE_PATH, (event, filePath) => {
             setPath(filePath)

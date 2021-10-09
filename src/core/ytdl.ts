@@ -12,11 +12,12 @@ import path from "path";
 import ytdl from "ytdl-core"
 import {getProcessManager} from "./processManager";
 import {handleDownloadInfo} from "./info";
+import os from "os"
 
 const binRootPath = app.getAppPath();
 let window: Electron.BrowserWindow
 
-export const initYTDL = (mainWindow: Electron.BrowserWindow) => {
+export const initYTDL = (mainWindow: Electron.BrowserWindow): void => {
     ipcMain.on(SET_YOUTUBE_URL, handleSetYoutubeURL)
     ipcMain.on(START_RECORDING, handleRecording)
     window = mainWindow
@@ -51,13 +52,30 @@ const handleSetYoutubeURL = async (event: IpcMainEvent, youtubeURL: string) => {
     event.reply(GET_YOUTUBE_INFO, youtubeInfo)
 }
 
-const getBinaryPath = () => path.join(binRootPath, "bin", "youtube-dl.exe")
+const getBinaryPath = () => path.join(binRootPath, "bin", parseYoutubeDlExecutables())
 
 const recordYoutubeVideo = (event: IpcMainEvent, youtubeId: string, quality: string, filePath: string) => {
     const youtubeURL = `https://www.youtube.com/watch?v=${youtubeId}`
     const processManager = getProcessManager()
     const ytdlPath = getBinaryPath()
-    const ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", `best[height=${quality}]/bestvideo+bestaudio/best`, "--merge-output-format", "mp4", "--continue", "--hls-use-mpegts", "--no-part", "-o", filePath])
+    let ytdlProcess: cp.ChildProcess
+    switch(os.platform()){
+        case "win32":
+            ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", `best[height=${quality}]/bestvideo+bestaudio/best`, "--merge-output-format", parseFormat(), "--continue", "--hls-use-mpegts", "--no-part", "-o", filePath])
+            break
+        case "darwin":
+        case "linux":
+            {
+                const ffmpegPath = path.join(binRootPath, "bin", "ffmpeg")
+                ytdlProcess = cp.execFile(ytdlPath, [youtubeURL, "-f", `best[height=${quality}]/bestvideo+bestaudio/best`, "--merge-output-format", parseFormat(), "--continue", "--hls-use-mpegts", "--no-part", "-o", filePath, "--ffmpeg-location", ffmpegPath])
+                break
+            }
+        default:
+            {
+                window.webContents.send(RECEIVE_ERROR, "OS is not supported")
+                return;
+            }
+    }
     processManager.addToDict(youtubeId, ytdlProcess)
     ytdlProcess.stderr.on('data', function (data: string) {
         if (data.includes("ERROR")) {
@@ -98,5 +116,31 @@ const getYoutubeInfo = async (youtubeURL: string): Promise<YoutubeInfo> => {
         isLiveNow,
         startTimestamp,
         isRecording: false
+    }
+}
+
+const parseYoutubeDlExecutables = (): string => {
+    const osName = os.platform()
+    switch (osName){
+        case "win32":
+            return "youtube-dl.exe"
+        case "darwin":
+        case "linux":
+            return "youtube-dl"
+        default: 
+            throw "OS is not supported"
+    }
+}
+
+export const parseFormat = (): string => {
+    const osName = os.platform()
+    switch (osName){
+        case "win32":
+        case "linux":
+            return "mp4"
+        case "darwin":
+            return "mov"
+        default: 
+            throw "OS is not supported"
     }
 }

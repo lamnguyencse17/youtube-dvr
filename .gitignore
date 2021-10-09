@@ -93,3 +93,5 @@ out/
 *.mp4
 
 *.exe
+
+bin/
