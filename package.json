@@ -1,125 +1,46 @@
 {
-  "name": "youtube-dvr",
-  "productName": "youtube-dvr",
-  "version": "1.0.0",
-  "description": "My Electron application description",
-  "main": ".webpack/main",
-  "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx .",
-    "build-windows": "build.bat"
-  },
-  "keywords": [],
-  "author": {
-    "name": "Lam Nguyen",
-    "email": "lam.nguyen.khmt2017@hcmut.edu.vn"
-  },
+  "name": "Youtube-DVR",
+  "productName": "Youtube DVR",
+  "private": true,
+  "version": "0.2.0",
+  "description": "Youtube DVR",
+  "author": "lam nguyen <nguyenquanglam3008@gmail.com>",
   "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "youtube_dvr"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ],
-      "plugins": [
-        [
-          "@electron-forge/plugin-webpack",
-          {
-            "mainConfig": "./webpack.main.config.js",
-            "renderer": {
-              "config": "./webpack.renderer.config.js",
-              "entryPoints": [
-                {
-                  "html": "./src/index.html",
-                  "js": "./src/renderer.ts",
-                  "name": "main_window"
-                }
-              ]
-            }
-          }
-        ]
-      ]
-    }
+  "main": "dist/electron/main/index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && electron-builder"
   },
-  "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.61",
-    "@electron-forge/maker-deb": "^6.0.0-beta.61",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.61",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
-    "@electron-forge/maker-zip": "^6.0.0-beta.61",
-    "@electron-forge/plugin-webpack": "^6.0.0-beta.61",
-    "@types/react": "^17.0.21",
-    "@types/react-dom": "^17.0.9",
-    "@types/react-router-dom": "^5.1.9",
-    "@typescript-eslint/eslint-plugin": "^4.31.1",
-    "@typescript-eslint/parser": "^4.31.1",
-    "@vercel/webpack-asset-relocator-loader": "^1.7.0",
-    "autoprefixer": "^10.3.4",
-    "css-loader": "^6.3.0",
-    "electron": "14.0.1",
-    "eslint": "^7.32.0",
-    "eslint-plugin-import": "^2.24.2",
-    "fork-ts-checker-webpack-plugin": "^6.3.3",
-    "node-loader": "^2.0.0",
-    "postcss": "^8.3.6",
-    "postcss-loader": "^6.1.1",
-    "react-router-dom": "^5.3.0",
-    "style-loader": "^3.2.1",
-    "tailwindcss": "^2.2.15",
-    "ts-loader": "^9.2.5",
-    "typescript": "^4.4.3"
+  "engines": {
+    "node": "^14.18.0 || >=16.0.0"
   },
   "dependencies": {
-    "@emotion/react": "^11.4.1",
-    "@emotion/styled": "^11.3.0",
-    "@mui/icons-material": "^5.0.0",
-    "@mui/material": "^5.0.0",
-    "@reduxjs/toolkit": "^1.6.1",
-    "@types/react-redux": "^7.1.18",
-    "electron-squirrel-startup": "^1.0.0",
-    "electron-sudo": "^4.0.12",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-redux": "^7.2.5",
-    "react-toastify": "^8.0.3",
-    "tree-kill": "^1.2.2",
-    "ytdl-core": "^4.9.1"
+    "@chakra-ui/react": "^2.2.8",
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "formik": "^2.2.9",
+    "framer-motion": "^7.2.0",
+    "react-player": "^2.10.1",
+    "react-router-dom": "6",
+    "ytdl-core": "^4.11.0",
+    "zod": "^3.18.0",
+    "zod-formik-adapter": "^1.1.1"
   },
-  "build": {
-    "asarUnpack": [
-      "bin/ffmpeg.exe",
-      "bin/youtube-dl.exe"
-    ],
-    "extraResources": [
-      {
-        "from": "./bin/**",
-        "to": "bin",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ]
+  "devDependencies": {
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.0.1",
+    "electron": "^20.0.2",
+    "electron-builder": "^23.3.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.54.4",
+    "typescript": "^4.7.4",
+    "vite": "^3.0.7",
+    "vite-plugin-electron": "^0.9.0"
+  },
+  "env": {
+    "VITE_DEV_SERVER_HOST": "127.0.0.1",
+    "VITE_DEV_SERVER_PORT": 7777
   }
 }
