@@ -45,11 +45,24 @@ export default function SingleVideo() {
     }
     return processDescription(video.description);
   }, [video]);
+
+  const handleDownloadVideo = async () => {
+    const isSuccess = await window.api.exposedDownloadVideo(video.url);
+    console.log(isSuccess);
+    if (isSuccess) {
+      window.api.exposedOnDownloadVideoProgress((progress) => {
+        console.log(progress);
+      });
+    }
+  };
   console.log(video);
   return (
-    <Flex direction="column" w="100%" h="100%" padding="5">
+    <Flex direction="column" w="100%" h="100%" padding="5" gap={3}>
+      <Flex direction="row" justifyContent="end">
+        <Button onClick={handleDownloadVideo}>Record</Button>
+      </Flex>
       {video.isLive ? (
-        <Grid templateColumns="repeat(6, 1fr)" gap={2} height="100%">
+        <Grid templateColumns="repeat(6, 1fr)" gap={2} minHeight="300px">
           <GridItem colSpan={[6, 6, 4]} height="100%">
             <webview
               src={`https://www.youtube.com/embed/${videoId}`}
@@ -68,7 +81,7 @@ export default function SingleVideo() {
           </GridItem>
         </Grid>
       ) : (
-        <Box w="100%" h="100%">
+        <Box w="100%" minHeight="300px">
           <webview
             src={`https://www.youtube.com/embed/${videoId}`}
             title="YouTube video player"

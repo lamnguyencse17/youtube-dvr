@@ -65,7 +65,7 @@ async function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
-  registerEvents(ipcMain);
+  registerEvents(ipcMain, win);
 });
 
 app.on("window-all-closed", () => {
