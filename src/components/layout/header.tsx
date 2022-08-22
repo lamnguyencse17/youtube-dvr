@@ -1,8 +1,7 @@
+import { VideoContext } from "@/context/video";
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
@@ -10,10 +9,13 @@ import {
   Button,
   useDisclosure,
   Input,
+  List,
+  ListItem,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
 
 export default function Header() {
+  const { videos } = useContext(VideoContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef(null);
   return (
@@ -30,18 +32,13 @@ export default function Header() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Create your account</DrawerHeader>
-
           <DrawerBody>
-            <Input placeholder="Type here..." />
+            <List>
+              {Object.keys(videos).map((key) => (
+                <ListItem key={key}>{videos[key].title}</ListItem>
+              ))}
+            </List>
           </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue">Save</Button>
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </Box>
