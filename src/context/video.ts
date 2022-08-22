@@ -13,6 +13,8 @@ export type VideoType = {
   thumbnails: ytdl.thumbnail[];
   isLive: boolean;
   isLiveContent: boolean;
+  author: ytdl.Author;
+  description: string | null;
 };
 
 export type VideoValue = {

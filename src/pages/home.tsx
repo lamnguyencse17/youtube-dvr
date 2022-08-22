@@ -46,8 +46,16 @@ export default function Home() {
   const handleGetUrl = async (url: string) => {
     const data = await window.api.exposedReadUrl(url);
     console.log(data.videoDetails.thumbnails);
-    const { videoId, video_url, title, thumbnails, isLive, isLiveContent } =
-      data.videoDetails as MoreVideoDetailsPatched;
+    const {
+      videoId,
+      video_url,
+      title,
+      thumbnails,
+      isLive,
+      isLiveContent,
+      author,
+      description,
+    } = data.videoDetails as MoreVideoDetailsPatched;
     setVideo(videoId, {
       id: videoId,
       url: video_url,
@@ -55,6 +63,8 @@ export default function Home() {
       title,
       isLive,
       isLiveContent,
+      author,
+      description,
     });
   };
   return (
@@ -89,17 +99,6 @@ export default function Home() {
           </Flex>
         </FormControl>
       </form>
-
-      {videoId && (
-        <Box w="100%" h="100%">
-          <webview
-            src={`https://www.youtube.com/embed/${videoId}`}
-            title="YouTube video player"
-            allowFullScreen
-            style={{ height: "100%", width: "100%" }}
-          />
-        </Box>
-      )}
     </Flex>
   );
 }

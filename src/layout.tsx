@@ -4,6 +4,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/layout/header";
 import { VideoContext, VideoType, VideoValue } from "./context/video";
 import Home from "./pages/home";
+import Videos from "./pages/videos";
 
 const Layout: React.FC = () => {
   const [videos, setVideos] = useState<VideoValue>({});
@@ -15,14 +16,15 @@ const Layout: React.FC = () => {
   return (
     <VideoContext.Provider value={{ videos, setVideo }}>
       <Flex direction="column" height="100%">
-        <Header />
-        <Box flexGrow="1">
-          <HashRouter>
+        <HashRouter>
+          <Header />
+          <Box flexGrow="1">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/videos/*" element={<Videos />} />
             </Routes>
-          </HashRouter>
-        </Box>
+          </Box>
+        </HashRouter>
       </Flex>
     </VideoContext.Provider>
   );
