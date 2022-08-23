@@ -14,16 +14,19 @@ import {
   Link as ChakraLink,
   Divider,
   Flex,
+  Heading,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
+  const { pathname } = useLocation();
   const { videos } = useContext(VideoContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef(null);
+
   return (
-    <Box>
+    <Flex direction="row" gap={3} alignItems="center">
       <IconButton
         aria-label="Open menu"
         icon={<HamburgerIcon color="pink.400" />}
@@ -44,12 +47,20 @@ export default function Header() {
             <Flex direction="column" gap={3}>
               <List spacing={5}>
                 <ListItem>
-                  <ChakraLink as={Link} to="/">
+                  <ChakraLink
+                    as={Link}
+                    to="/"
+                    color={pathname === "/" ? "pink.400" : "black"}
+                  >
                     Home
                   </ChakraLink>
                 </ListItem>
                 <ListItem>
-                  <ChakraLink as={Link} to="/videos">
+                  <ChakraLink
+                    as={Link}
+                    to="/videos"
+                    color={pathname === "/videos" ? "pink.400" : "black"}
+                  >
                     Videos
                   </ChakraLink>
                 </ListItem>
@@ -58,7 +69,13 @@ export default function Header() {
               <List spacing={3}>
                 {Object.keys(videos).map((key) => (
                   <ListItem key={key}>
-                    <ChakraLink as={Link} to={`/videos/${key}`}>
+                    <ChakraLink
+                      as={Link}
+                      to={`/videos/${key}`}
+                      color={
+                        pathname === `/videos/${key}` ? "pink.400" : "black"
+                      }
+                    >
                       {videos[key].author.name}
                     </ChakraLink>
                   </ListItem>
@@ -68,6 +85,7 @@ export default function Header() {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </Box>
+      <Heading color="pink.400">Youtube DVR</Heading>
+    </Flex>
   );
 }

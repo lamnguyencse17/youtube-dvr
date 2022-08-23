@@ -6,7 +6,7 @@ export const VideoContext = createContext<VideoContextType>({
   setVideo: () => {},
 });
 
-export type VideoType = {
+export type VideoValueType = {
   url: string;
   id: string;
   title: string;
@@ -15,13 +15,14 @@ export type VideoType = {
   isLiveContent: boolean;
   author: ytdl.Author;
   description: string | null;
+  formats: ytdl.videoFormat[];
 };
 
-export type VideoValue = {
-  [key: string]: VideoType;
+export type VideoType = {
+  [key: string]: VideoValueType;
 };
 
 export type VideoContextType = {
-  videos: VideoValue;
-  setVideo: (id: string, value: VideoType) => void;
+  videos: VideoType;
+  setVideo: (id: string, value: VideoValueType) => void;
 };

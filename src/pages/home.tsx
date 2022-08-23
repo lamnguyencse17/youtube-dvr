@@ -45,7 +45,7 @@ export default function Home() {
 
   const handleGetUrl = async (url: string) => {
     const data = await window.api.exposedReadUrl(url);
-    console.log(data.videoDetails.thumbnails);
+    const { videoDetails, formats } = data;
     const {
       videoId,
       video_url,
@@ -55,7 +55,8 @@ export default function Home() {
       isLiveContent,
       author,
       description,
-    } = data.videoDetails as MoreVideoDetailsPatched;
+    } = videoDetails as MoreVideoDetailsPatched;
+    console.log(data);
     setVideo(videoId, {
       id: videoId,
       url: video_url,
@@ -65,6 +66,7 @@ export default function Home() {
       isLiveContent,
       author,
       description,
+      formats,
     });
   };
   return (

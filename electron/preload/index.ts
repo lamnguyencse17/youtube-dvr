@@ -1,18 +1,24 @@
 import { contextBridge, ipcRenderer } from "electron";
 import ytdl from "ytdl-core";
-import { Events } from "../../lib/events";
+import { Events } from "../../libs/events";
 
-type ProgressData = {
+export type ProgressData = {
+  id: string;
   progress: number | null;
   downloaded: number;
   total: number | null;
   current: number;
+  isRecording: boolean;
 };
 
 export type ContextBridgeApi = {
   exposedReadUrl: (url: string) => Promise<ytdl.videoInfo>;
-  exposedDownloadVideo: (url: string) => Promise<boolean>;
+  exposedDownloadVideo: (videoId: string) => Promise<boolean>;
+  exposedStopDownloadingVideo: (videoId: string) => Promise<boolean>;
   exposedOnDownloadVideoProgress: (
+    callback: (data: ProgressData) => void
+  ) => void;
+  exposedOnStopDownloadingVideo: (
     callback: (data: ProgressData) => void
   ) => void;
 };
@@ -27,8 +33,8 @@ const exposedApi: ContextBridgeApi = {
       );
     });
   },
-  exposedDownloadVideo: (url: string) => {
-    ipcRenderer.send(Events.DOWNLOAD_VIDEO_EVENT, url);
+  exposedDownloadVideo: (videoId: string) => {
+    ipcRenderer.send(Events.DOWNLOAD_VIDEO_EVENT, videoId);
     return new Promise((resolve) => {
       ipcRenderer.once(
         Events.DOWNLOAD_VIDEO_STARTED_EVENT,
@@ -38,6 +44,19 @@ const exposedApi: ContextBridgeApi = {
   },
   exposedOnDownloadVideoProgress: (callback: (data: ProgressData) => void) =>
     ipcRenderer.on(Events.DOWNLOAD_VIDEO_PROGRESS_EVENT, (event, data) =>
+      callback(data)
+    ),
+  exposedStopDownloadingVideo: (videoId: string) => {
+    ipcRenderer.send(Events.STOP_DOWNLOAD_VIDEO_EVENT, videoId);
+    return new Promise((resolve) => {
+      ipcRenderer.once(
+        Events.STOP_DOWNLOAD_VIDEO_EVENT,
+        (event, isStarted: boolean) => resolve(isStarted)
+      );
+    });
+  },
+  exposedOnStopDownloadingVideo: (callback: (data: ProgressData) => void) =>
+    ipcRenderer.on(Events.STOP_DOWNLOAD_VIDEO_SUCCESS_EVENT, (event, data) =>
       callback(data)
     ),
 };
