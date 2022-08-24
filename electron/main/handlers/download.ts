@@ -1,4 +1,4 @@
-import { BrowserWindow, IpcMainEvent } from "electron";
+import { BrowserWindow, dialog, IpcMainEvent } from "electron";
 import ytdl from "ytdl-core";
 import fs from "fs";
 import { streamCache, StreamCacheType, videoCache } from "../cache";
@@ -16,6 +16,23 @@ export const handleDownloadEvent = async (
     event.sender.send(Events.DOWNLOAD_VIDEO_STARTED_EVENT, false);
     return;
   }
+  if (!mainWindow) {
+    event.sender.send(Events.DOWNLOAD_VIDEO_STARTED_EVENT, false);
+    logger.error(
+      {
+        stack: new Error().stack,
+        id: videoId,
+      },
+      "mainWindow is null"
+    );
+    return;
+  }
+  const { canceled, filePath } = await dialog.showSaveDialog(mainWindow);
+  if (canceled || !filePath) {
+    return;
+  } else {
+    logger.info({ filePath }, "File path successfully identifed");
+  }
   event.sender.send(Events.DOWNLOAD_VIDEO_STARTED_EVENT, true);
   let videoInfo = videoCache.get<ytdl.videoInfo>(videoId);
   if (!videoInfo) {
@@ -31,7 +48,7 @@ export const handleDownloadEvent = async (
     }
   }
   const stream = ytdl(videoInfo.videoDetails.video_url);
-  stream.pipe(fs.createWriteStream("video.mp4"));
+  stream.pipe(fs.createWriteStream(filePath));
   stream.on("progress", (chunkLength, downloaded, total) => {
     const progressData: ProgressValueType = {
       progress: total ? downloaded / total : null,
@@ -46,17 +63,6 @@ export const handleDownloadEvent = async (
       stream,
       progress: progressData,
     });
-    if (!mainWindow) {
-      event.sender.send(Events.DOWNLOAD_VIDEO_STARTED_EVENT, false);
-      logger.error(
-        {
-          stack: new Error().stack,
-          id: videoId,
-        },
-        "mainWindow is null"
-      );
-      return;
-    }
     mainWindow.webContents.send(
       Events.DOWNLOAD_VIDEO_PROGRESS_EVENT,
       progressData
