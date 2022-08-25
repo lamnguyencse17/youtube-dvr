@@ -2,8 +2,8 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-  appId: "YourAppID",
-  productName: "YourAppName",
+  appId: "lamnguyencse17.youtubedvr",
+  productName: "Youtube DVR",
   copyright: "Copyright © 2022 ${author}",
   asar: true,
   directories: {
@@ -11,7 +11,7 @@
     buildResources: "electron/resources",
   },
   files: ["dist"],
-  extraFiles: ["bin/yt-dlp.exe"],
+  extraFiles: ["bin/yt-dlp.exe", "bin/ffmpeg.exe", "bin/ffprobe.exe"],
   win: {
     target: [
       {

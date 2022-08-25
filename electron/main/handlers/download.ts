@@ -94,9 +94,17 @@ export const handleDownloadEvent = async (
           );
         }
       });
+      if (ytdlProcess.stdout) {
+        ytdlProcess.stdout.on("data", (data) => {
+          logger.info(data);
+        });
+      }
     }
   } catch (err) {
-    logger.error(err, "SOMETHING WENT WRONG WHILE REQUESTING DOWNLOAD");
+    logger.error(
+      { err, videoId },
+      "SOMETHING WENT WRONG WHILE REQUESTING DOWNLOAD"
+    );
   }
 };
 
