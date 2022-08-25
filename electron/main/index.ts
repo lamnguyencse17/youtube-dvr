@@ -2,6 +2,7 @@ import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { release } from "os";
 import { join } from "path";
 import registerEvents from "./events";
+import logger from "./logger";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
@@ -21,6 +22,9 @@ export const ROOT_PATH = {
   dist: join(__dirname, "../.."),
   // /dist or /public
   public: join(__dirname, app.isPackaged ? "../.." : "../../../public"),
+  bin: app.isPackaged
+    ? join(process.resourcesPath, "../bin")
+    : join(__dirname, "../../../bin"),
 };
 
 let win: BrowserWindow | null = null;
@@ -29,6 +33,10 @@ const preload = join(__dirname, "../preload/index.js");
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
 const url = process.env.VITE_DEV_SERVER_URL as string;
 const indexHtml = join(ROOT_PATH.dist, "index.html");
+
+logger.info({
+  ROOT_PATH,
+});
 
 async function createWindow() {
   win = new BrowserWindow({

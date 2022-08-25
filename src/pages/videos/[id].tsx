@@ -1,4 +1,4 @@
-import { ProgressContext } from "@/context/progress";
+import { StreamContext } from "@/context/stream";
 import { VideoContext } from "@/context/video";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
@@ -36,14 +36,15 @@ const processDescription = (data: string) => {
 export default function SingleVideo() {
   const { videoId } = useParams();
   const { videos } = useContext(VideoContext);
-  const { progresses } = useContext(ProgressContext);
+  const { streams } = useContext(StreamContext);
 
   const [showMore, setShowMore] = useState(false);
+  const [formatId, setFormatId] = useState<string | null>(null);
   if (!videoId) {
     return <div> Nope </div>;
   }
   const video = videos[videoId];
-  const progress = progresses[videoId];
+  const streamStat = streams[videoId];
 
   const { author } = video;
   const descriptionLines = useMemo(() => {
@@ -54,7 +55,14 @@ export default function SingleVideo() {
   }, [video]);
 
   const handleDownloadVideo = async () => {
-    const isSuccess = await window.api.exposedDownloadVideo(video.id);
+    console.log({ videoId: video.id, formatId });
+    if (!formatId) {
+      return;
+    }
+    const isSuccess = await window.api.exposedDownloadVideo({
+      videoId: video.id,
+      formatId,
+    });
     if (!isSuccess) {
       console.error("Failed to start downloading");
     }
@@ -67,21 +75,30 @@ export default function SingleVideo() {
     }
   };
 
-  const isRecording = !!progress && progress.isRecording;
+  const isRecording = !!streamStat && streamStat.isRecording;
+  console.log(video);
   return (
     <Flex direction="column" w="100%" h="100%" padding="5" gap={3}>
       <Flex direction="row" justifyContent="end" gap={2}>
-        <Select placeholder="Select option">
-          {video.formats.map(
-            (format) =>
-              format.qualityLabel && (
-                <option value={format.itag}>{format.qualityLabel}</option>
-              )
-          )}
+        <Select
+          placeholder="Select option"
+          onChange={(e) => {
+            setFormatId(e.target.value);
+          }}
+        >
+          {video.formats.map((format) => (
+            <option
+              value={format.formatId}
+              key={format.formatId}
+              id={format.formatId}
+            >
+              {format.height}p{format.fps} - {format.vbr}kbps
+            </option>
+          ))}
         </Select>
         <Button
           onClick={
-            progress && progress.isRecording
+            streamStat && streamStat.isRecording
               ? handleStopDownloadingVideo
               : handleDownloadVideo
           }
@@ -123,23 +140,23 @@ export default function SingleVideo() {
       )}
       <Text fontSize="2xl">{video.title}</Text>
       <Flex direction="row" gap={3} alignItems="center" paddingX="1em">
-        {author.thumbnails && (
+        {/* {author.thumbnails && (
           <Avatar
             name={author.name}
             src={author.thumbnails[author.thumbnails.length - 1].url}
           />
-        )}
+        )} */}
         <Flex direction="column">
-          <Link href={author.channel_url} isExternal>
+          <Link href={author.url} isExternal>
             <Flex direction="row" alignItems="center" gap={3}>
               <Text fontSize="xl">{author.name}</Text>
               <ExternalLinkIcon mx="2px" />
             </Flex>
           </Link>
 
-          {author.subscriber_count && (
+          {author.subscriberCount && (
             <Text fontSize="lg">
-              {author.subscriber_count / 1000}K Subscribers
+              {author.subscriberCount / 1000}K Subscribers
             </Text>
           )}
         </Flex>

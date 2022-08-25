@@ -1,19 +1,16 @@
 import { Box, Flex } from "@chakra-ui/react";
+import { StreamStatType } from "electron/preload";
 import { useEffect, useState } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/layout/header";
-import {
-  ProgressContext,
-  ProgressType,
-  ProgressValueType,
-} from "./context/progress";
+import { StreamContext, StatType } from "./context/stream";
 import { VideoContext, VideoType, VideoValueType } from "./context/video";
 import Home from "./pages/home";
 import Videos from "./pages/videos";
 
 const Layout: React.FC = () => {
   const [videos, setVideos] = useState<VideoType>({});
-  const [progresses, setProgresses] = useState<ProgressType>({});
+  const [streams, setStreams] = useState<StatType>({});
 
   const setVideo = (id: string, value: VideoValueType) => {
     const newVideos = { ...videos };
@@ -21,28 +18,28 @@ const Layout: React.FC = () => {
     setVideos({ ...newVideos });
   };
 
-  const setProgress = (id: string, value: ProgressValueType) => {
-    const newProgresses = { ...progresses };
+  const setSingleStream = (id: string, value: StreamStatType) => {
+    const newProgresses = { ...streams };
     newProgresses[id] = value;
-    setProgresses({ ...newProgresses });
+    setStreams({ ...newProgresses });
   };
 
   useEffect(() => {
-    window.api.exposedOnDownloadVideoProgress((progress) => {
-      setProgress(progress.id, { ...progress, isRecording: true });
+    window.api.exposedOnDownloadVideoProgress((streamStat) => {
+      setSingleStream(streamStat.id, { ...streamStat });
     });
-    window.api.exposedOnStopDownloadingVideo((progress) => {
-      setProgress(progress.id, { ...progress, isRecording: false });
+    window.api.exposedOnStopDownloadingVideo((streamStat) => {
+      setSingleStream(streamStat.id, { ...streamStat });
     });
   }, []);
 
   useEffect(() => {
-    console.log(progresses);
-  }, [progresses]);
+    console.log(streams);
+  }, [streams]);
 
   return (
     <VideoContext.Provider value={{ videos, setVideo }}>
-      <ProgressContext.Provider value={{ progresses, setProgress }}>
+      <StreamContext.Provider value={{ streams, setSingleStream }}>
         <Flex direction="column" height="100%">
           <HashRouter>
             <Header />
@@ -54,7 +51,7 @@ const Layout: React.FC = () => {
             </Box>
           </HashRouter>
         </Flex>
-      </ProgressContext.Provider>
+      </StreamContext.Provider>
     </VideoContext.Provider>
   );
 };

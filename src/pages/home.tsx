@@ -45,29 +45,7 @@ export default function Home() {
 
   const handleGetUrl = async (url: string) => {
     const data = await window.api.exposedReadUrl(url);
-    const { videoDetails, formats } = data;
-    const {
-      videoId,
-      video_url,
-      title,
-      thumbnails,
-      isLive,
-      isLiveContent,
-      author,
-      description,
-    } = videoDetails as MoreVideoDetailsPatched;
-    console.log(data);
-    setVideo(videoId, {
-      id: videoId,
-      url: video_url,
-      thumbnails,
-      title,
-      isLive,
-      isLiveContent,
-      author,
-      description,
-      formats,
-    });
+    setVideo(data.id, data);
   };
   return (
     <Flex

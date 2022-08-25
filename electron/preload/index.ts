@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 import ytdl from "ytdl-core";
 import { Events } from "../../libs/events";
+import { Stat, VideoInfo } from "../../libs/types";
 
 export type ProgressData = {
   id: string;
@@ -11,15 +12,28 @@ export type ProgressData = {
   isRecording: boolean;
 };
 
+export type StreamStatType = {
+  id: string;
+  location: string;
+  isRecording: boolean;
+} & Stat;
+
+export type DownloadVideoRequestType = {
+  videoId: string;
+  formatId: string;
+};
+
 export type ContextBridgeApi = {
-  exposedReadUrl: (url: string) => Promise<ytdl.videoInfo>;
-  exposedDownloadVideo: (videoId: string) => Promise<boolean>;
+  exposedReadUrl: (url: string) => Promise<VideoInfo>;
+  exposedDownloadVideo: (
+    downloadVideoRequest: DownloadVideoRequestType
+  ) => Promise<boolean>;
   exposedStopDownloadingVideo: (videoId: string) => Promise<boolean>;
   exposedOnDownloadVideoProgress: (
-    callback: (data: ProgressData) => void
+    callback: (data: StreamStatType) => void
   ) => void;
   exposedOnStopDownloadingVideo: (
-    callback: (data: ProgressData) => void
+    callback: (data: StreamStatType) => void
   ) => void;
 };
 
@@ -29,12 +43,12 @@ const exposedApi: ContextBridgeApi = {
     return new Promise((resolve) => {
       ipcRenderer.once(
         Events.READ_URL_SUCCESS_EVENT,
-        (event, data: ytdl.videoInfo) => resolve(data)
+        (event, data: VideoInfo) => resolve(data)
       );
     });
   },
-  exposedDownloadVideo: (videoId: string) => {
-    ipcRenderer.send(Events.DOWNLOAD_VIDEO_EVENT, videoId);
+  exposedDownloadVideo: (downloadVideoRequest: DownloadVideoRequestType) => {
+    ipcRenderer.send(Events.DOWNLOAD_VIDEO_EVENT, downloadVideoRequest);
     return new Promise((resolve) => {
       ipcRenderer.once(
         Events.DOWNLOAD_VIDEO_STARTED_EVENT,
@@ -42,7 +56,7 @@ const exposedApi: ContextBridgeApi = {
       );
     });
   },
-  exposedOnDownloadVideoProgress: (callback: (data: ProgressData) => void) =>
+  exposedOnDownloadVideoProgress: (callback: (data: StreamStatType) => void) =>
     ipcRenderer.on(Events.DOWNLOAD_VIDEO_PROGRESS_EVENT, (event, data) =>
       callback(data)
     ),
@@ -55,7 +69,7 @@ const exposedApi: ContextBridgeApi = {
       );
     });
   },
-  exposedOnStopDownloadingVideo: (callback: (data: ProgressData) => void) =>
+  exposedOnStopDownloadingVideo: (callback: (data: StreamStatType) => void) =>
     ipcRenderer.on(Events.STOP_DOWNLOAD_VIDEO_SUCCESS_EVENT, (event, data) =>
       callback(data)
     ),

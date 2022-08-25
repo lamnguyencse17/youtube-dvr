@@ -11,6 +11,7 @@
     buildResources: "electron/resources",
   },
   files: ["dist"],
+  extraFiles: ["bin/yt-dlp.exe"],
   win: {
     target: [
       {

@@ -19,6 +19,7 @@
     "@chakra-ui/react": "^2.2.8",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "camelcase-keys": "^8.0.1",
     "formik": "^2.2.9",
     "framer-motion": "^7.2.0",
     "node-cache": "^5.1.2",
@@ -27,6 +28,7 @@
     "react-linkify": "^1.0.0-alpha",
     "react-player": "^2.10.1",
     "react-router-dom": "6",
+    "tree-kill": "^1.2.2",
     "ytdl-core": "https://github.com/GreepTheSheep/node-ytdl-core",
     "zod": "^3.18.0",
     "zod-formik-adapter": "^1.1.1"

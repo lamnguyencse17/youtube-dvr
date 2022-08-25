@@ -1,5 +1,5 @@
+import { Format, Thumbnail } from "libs/types";
 import { createContext } from "react";
-import ytdl from "ytdl-core";
 
 export const VideoContext = createContext<VideoContextType>({
   videos: {},
@@ -10,12 +10,18 @@ export type VideoValueType = {
   url: string;
   id: string;
   title: string;
-  thumbnails: ytdl.thumbnail[];
+  thumbnails: Thumbnail[];
   isLive: boolean;
-  isLiveContent: boolean;
-  author: ytdl.Author;
+  author: AuthorType;
   description: string | null;
-  formats: ytdl.videoFormat[];
+  formats: Format[];
+};
+
+export type AuthorType = {
+  id: string;
+  name: string;
+  subscriberCount: number;
+  url: string;
 };
 
 export type VideoType = {
