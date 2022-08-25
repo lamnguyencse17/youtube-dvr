@@ -1,5 +1,5 @@
 import { app, BrowserWindow, shell, ipcMain } from "electron";
-import { release } from "os";
+import { release, homedir } from "os";
 import { join } from "path";
 import registerEvents from "./events";
 import logger from "./logger";
@@ -25,6 +25,7 @@ export const ROOT_PATH = {
   bin: app.isPackaged
     ? join(process.resourcesPath, "../bin")
     : join(__dirname, "../../../bin"),
+  home: homedir(),
 };
 
 let win: BrowserWindow | null = null;

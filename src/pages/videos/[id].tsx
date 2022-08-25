@@ -138,24 +138,20 @@ export default function SingleVideo() {
           />
         </Box>
       )}
-      <Text fontSize="2xl">{video.title}</Text>
-      <Flex direction="row" gap={3} alignItems="center" paddingX="1em">
-        {/* {author.thumbnails && (
-          <Avatar
-            name={author.name}
-            src={author.thumbnails[author.thumbnails.length - 1].url}
-          />
-        )} */}
+      <Text fontSize="xl" fontWeight="semibold">
+        {video.title}
+      </Text>
+      <Flex direction="row" gap={2} alignItems="center" paddingX="1em">
         <Flex direction="column">
           <Link href={author.url} isExternal>
-            <Flex direction="row" alignItems="center" gap={3}>
+            <Flex direction="row" alignItems="center" gap={2} color="pink.400">
               <Text fontSize="xl">{author.name}</Text>
               <ExternalLinkIcon mx="2px" />
             </Flex>
           </Link>
 
           {author.subscriberCount && (
-            <Text fontSize="lg">
+            <Text fontSize="lg" fontWeight="medium">
               {author.subscriberCount / 1000}K Subscribers
             </Text>
           )}

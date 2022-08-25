@@ -15,6 +15,7 @@ import {
   Divider,
   Flex,
   Heading,
+  Tooltip,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -69,15 +70,17 @@ export default function Header() {
               <List spacing={3}>
                 {Object.keys(videos).map((key) => (
                   <ListItem key={key}>
-                    <ChakraLink
-                      as={Link}
-                      to={`/videos/${key}`}
-                      color={
-                        pathname === `/videos/${key}` ? "pink.400" : "black"
-                      }
-                    >
-                      {videos[key].author.name}
-                    </ChakraLink>
+                    <Tooltip label={videos[key].title}>
+                      <ChakraLink
+                        as={Link}
+                        to={`/videos/${key}`}
+                        color={
+                          pathname === `/videos/${key}` ? "pink.400" : "black"
+                        }
+                      >
+                        {videos[key].author.name}
+                      </ChakraLink>
+                    </Tooltip>
                   </ListItem>
                 ))}
               </List>

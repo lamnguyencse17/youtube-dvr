@@ -8,6 +8,7 @@ import { RawStat, RawVideoInfo, Stat } from "../../../libs/types";
 import camelcaseKeys from "camelcase-keys";
 import path from "path";
 import kill from "tree-kill";
+import { ROOT_PATH } from "..";
 
 export const handleDownloadEvent = async (
   event: IpcMainEvent,
@@ -35,12 +36,6 @@ export const handleDownloadEvent = async (
       );
       return;
     }
-    const { canceled, filePath } = await dialog.showSaveDialog(mainWindow);
-    if (canceled || !filePath) {
-      return;
-    } else {
-      logger.info({ filePath }, "File path successfully identifed");
-    }
     let videoInfo = videoCache.get<RawVideoInfo>(videoId);
     if (!videoInfo) {
       console.error(`Failed to get cache for video id ${videoId}`);
@@ -52,6 +47,22 @@ export const handleDownloadEvent = async (
       if (!isSuccess) {
         console.error(`Cache for video id ${videoInfo.id} failed`);
       }
+    }
+    const selectedVideo = videoInfo.formats.find(
+      (format) => format.formatId === formatId
+    );
+    const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+      defaultPath: path.join(
+        ROOT_PATH.home,
+        videoInfo.fulltitle && selectedVideo
+          ? videoInfo.fulltitle + "." + selectedVideo.videoExt
+          : "video.unknown"
+      ),
+    });
+    if (canceled || !filePath) {
+      return;
+    } else {
+      logger.info({ filePath }, "File path successfully identifed");
     }
     const fileName = path.basename(filePath);
     const location = path.dirname(filePath);
