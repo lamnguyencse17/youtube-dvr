@@ -1,6 +1,9 @@
 import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { release, homedir } from "os";
 import { join } from "path";
+import kill from "tree-kill";
+import { processCache } from "./cache";
+import checkDependencies from "./dependencies";
 import registerEvents from "./events";
 import logger from "./logger";
 
@@ -72,7 +75,8 @@ async function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  await checkDependencies();
   createWindow();
   registerEvents(ipcMain, win);
 });
@@ -80,6 +84,17 @@ app.whenReady().then(() => {
 app.on("window-all-closed", () => {
   win = null;
   if (process.platform !== "darwin") app.quit();
+  Object.keys(processCache).forEach((key) => {
+    const processPid = processCache[key].pid;
+    if (processPid === undefined) {
+      return;
+    }
+    kill(processPid, "SIGINT", (err) => {
+      if (err) {
+        throw err;
+      }
+    });
+  });
 });
 
 app.on("second-instance", () => {
@@ -106,7 +121,6 @@ ipcMain.handle("open-win", (event, arg) => {
       preload,
     },
   });
-
   if (app.isPackaged) {
     childWindow.loadFile(indexHtml, { hash: arg });
   } else {

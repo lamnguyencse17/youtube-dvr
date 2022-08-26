@@ -1,5 +1,5 @@
 {
-  "name": "Youtube-DVR",
+  "name": "youtube-dvr",
   "productName": "Youtube DVR",
   "private": true,
   "version": "0.2.0",
@@ -23,12 +23,14 @@
     "formik": "^2.2.9",
     "framer-motion": "^7.2.0",
     "node-cache": "^5.1.2",
+    "node-fetch": "^3.2.10",
     "pino": "^8.4.2",
     "pino-pretty": "^9.0.1",
     "react-linkify": "^1.0.0-alpha",
     "react-player": "^2.10.1",
     "react-router-dom": "6",
     "tree-kill": "^1.2.2",
+    "yauzl": "^2.10.0",
     "ytdl-core": "https://github.com/GreepTheSheep/node-ytdl-core",
     "zod": "^3.18.0",
     "zod-formik-adapter": "^1.1.1"

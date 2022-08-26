@@ -34,7 +34,7 @@ export const execDownloadVideo = async (
   const ffmpegLocation = `--ffmpeg-location ${ffmpegPath}`;
   const outputName = `-o "${fileName}"`;
   const saveLocation = `-P ${location}`;
-  const command = `${ytdlPath} ${saveLocation} ${outputName} ${filter} ${ffmpegLocation} --windows-filenames --no-overwrites --continue ${url}`;
+  const command = `${ytdlPath} ${saveLocation} ${outputName} ${filter} ${ffmpegLocation} --windows-filenames ${url}`;
   logger.info(`DOWNLOADING WITH THIS COMMAND ${command}`);
   return childExec(command);
 };
