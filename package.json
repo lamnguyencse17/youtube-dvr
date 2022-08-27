@@ -2,14 +2,15 @@
   "name": "youtube-dvr",
   "productName": "Youtube DVR",
   "private": true,
-  "version": "0.2.1a",
+  "version": "0.2.2",
   "description": "Youtube DVR",
   "author": "lam nguyen <nguyenquanglam3008@gmail.com>",
   "license": "MIT",
   "main": "dist/electron/main/index.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder"
+    "build": "tsc && vite build && electron-builder",
+    "release": "tsc && vite build && electron-builder --publish=always"
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"

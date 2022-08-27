@@ -28,3 +28,11 @@ pnpm-lock.yaml
 yarn.lock
 
 *.mp4
+
+bin/ffmpeg.exe
+
+bin/ffplay.exe
+
+bin/ffprobe.exe
+
+bin/yt-dlp.exe
