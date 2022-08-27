@@ -1,10 +1,13 @@
-import { ROOT_PATH } from ".";
 import logger from "./logger";
 import path from "path";
 import fs from "fs";
 import { promisify } from "util";
 import { exec as childExec } from "child_process";
 import { downloadFileFromUrl, unzipFfmpeg } from "./utils";
+import { DEPENDENCIES_CHECK_STATUS } from "../preload/types";
+import { sendEvent } from "./events";
+import { ROOT_PATH } from "./config";
+import { Events } from "../../libs/events";
 
 const exec = promisify(childExec);
 const access = promisify(fs.access);
@@ -14,11 +17,24 @@ const ytdlInfo =
 const ffmpegInfo =
   "https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip";
 
-const checkDependencies = async () => {
-  logger.info("CHECKING FOR DEPENDENCIES");
-  Promise.all([handleYtdlDependency(), handleFfmpegDependency()]).then(() => {
-    logger.info("FINISH CHECKING DEPENDENCIES");
+export const checkDependencies = async () => {
+  sendEvent(Events.DEPENDENCY_CHECK_EVENT, {
+    status: DEPENDENCIES_CHECK_STATUS.STARTED,
   });
+  logger.info("CHECKING FOR DEPENDENCIES");
+  Promise.allSettled([handleYtdlDependency(), handleFfmpegDependency()])
+    .then(() => {
+      logger.info("FINISH CHECKING DEPENDENCIES");
+      sendEvent(Events.DEPENDENCY_CHECK_EVENT, {
+        status: DEPENDENCIES_CHECK_STATUS.SUCCESS,
+      });
+    })
+    .catch((err) => {
+      logger.error({ err }, "ERROR WHILE CHECKING DEPENDENCIES");
+      sendEvent(Events.DEPENDENCY_CHECK_EVENT, {
+        status: DEPENDENCIES_CHECK_STATUS.ERROR,
+      });
+    });
 };
 
 const handleYtdlDependency = async () => {
@@ -54,9 +70,8 @@ const handleFfmpegDependency = async () => {
       await unzipFfmpeg(ffmpegZipPath);
       logger.info("FINISH PULLING FFMPEG");
     } catch (err) {
-      logger.error({ err }, "FAILED TO FINISH UNZIP FFMPEG");
+      logger.info("FAILED TO FINISH UNZIP FFMPEG");
+      throw err;
     }
   }
 };
-
-export default checkDependencies;

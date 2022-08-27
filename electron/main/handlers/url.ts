@@ -3,7 +3,7 @@ import { Events } from "../../../libs/events";
 import { videoCache } from "../cache";
 import logger from "../logger";
 import camelcaseKeys from "camelcase-keys";
-import { RawVideoInfo, VideoInfo } from "../../../libs/types";
+import { RawVideoInfo } from "../../../libs/types";
 import { execReadInfo } from "../yt-dlp";
 
 export const handleReadUrl = async (event: IpcMainEvent, url: string) => {

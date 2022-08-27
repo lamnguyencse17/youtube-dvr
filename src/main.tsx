@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import Layout from "./layout";
 import { ChakraProvider } from "@chakra-ui/react";
 import "styles/index.css";
+import Provider from "./provider";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ChakraProvider>
-      <Layout />
+      <Provider />
     </ChakraProvider>
   </React.StrictMode>
 );

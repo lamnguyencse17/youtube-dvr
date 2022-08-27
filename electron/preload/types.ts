@@ -1,0 +1,5 @@
+export enum DEPENDENCIES_CHECK_STATUS {
+  STARTED,
+  SUCCESS,
+  ERROR,
+}

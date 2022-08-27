@@ -8,7 +8,7 @@ import { RawStat, RawVideoInfo, Stat } from "../../../libs/types";
 import camelcaseKeys from "camelcase-keys";
 import path from "path";
 import kill from "tree-kill";
-import { ROOT_PATH } from "..";
+import { ROOT_PATH } from "../config";
 
 export const handleDownloadEvent = async (
   event: IpcMainEvent,

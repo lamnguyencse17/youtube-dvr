@@ -8,14 +8,9 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import React, { useContext, useState } from "react";
-import ytdl from "ytdl-core";
+import { useContext, useState } from "react";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-
-interface MoreVideoDetailsPatched extends ytdl.MoreVideoDetails {
-  isLive: boolean;
-}
 
 export default function Home() {
   const { setVideo } = useContext(VideoContext);

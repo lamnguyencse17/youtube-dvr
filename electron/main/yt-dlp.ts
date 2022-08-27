@@ -1,9 +1,9 @@
 import path from "path";
-import { ROOT_PATH } from ".";
 import { exec as childExec } from "child_process";
 import { promisify } from "util";
 import logger from "./logger";
 import fs from "fs";
+import { ROOT_PATH } from "./config";
 
 const exec = promisify(childExec);
 const access = promisify(fs.access);

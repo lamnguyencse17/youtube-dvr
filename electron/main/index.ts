@@ -3,14 +3,12 @@ import { release, homedir } from "os";
 import { join } from "path";
 import kill from "tree-kill";
 import { processCache } from "./cache";
-import checkDependencies from "./dependencies";
+import { ROOT_PATH } from "./config";
 import registerEvents from "./events";
 import logger from "./logger";
 
-// Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
 
-// Set application name for Windows 10+ notifications
 if (process.platform === "win32") app.setAppUserModelId(app.getName());
 
 if (!app.requestSingleInstanceLock()) {
@@ -20,21 +18,8 @@ if (!app.requestSingleInstanceLock()) {
 
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
-export const ROOT_PATH = {
-  // /dist
-  dist: join(__dirname, "../.."),
-  // /dist or /public
-  public: join(__dirname, app.isPackaged ? "../.." : "../../../public"),
-  bin: app.isPackaged
-    ? join(process.resourcesPath, "../bin")
-    : join(__dirname, "../../../bin"),
-  home: homedir(),
-};
-
 let win: BrowserWindow | null = null;
-// Here, you can also use other preload
 const preload = join(__dirname, "../preload/index.js");
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin
 const url = process.env.VITE_DEV_SERVER_URL as string;
 const indexHtml = join(ROOT_PATH.dist, "index.html");
 
@@ -59,14 +44,9 @@ async function createWindow() {
   if (app.isPackaged) {
     win.loadFile(indexHtml);
   } else {
-    win.loadURL(url);
-    // win.webContents.openDevTools()
+    win.loadURL(url + "splash");
+    win.webContents.openDevTools();
   }
-
-  // Test actively push message to the Electron-Renderer
-  win.webContents.on("did-finish-load", () => {
-    win?.webContents.send("main-process-message", new Date().toLocaleString());
-  });
 
   // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -75,10 +55,10 @@ async function createWindow() {
   });
 }
 
-app.whenReady().then(async () => {
-  await checkDependencies();
-  createWindow();
-  registerEvents(ipcMain, win);
+app.whenReady().then(() => {
+  createWindow().then(() => {
+    registerEvents(ipcMain, win);
+  });
 });
 
 app.on("window-all-closed", () => {
@@ -125,6 +105,6 @@ ipcMain.handle("open-win", (event, arg) => {
     childWindow.loadFile(indexHtml, { hash: arg });
   } else {
     childWindow.loadURL(`${url}/#${arg}`);
-    // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
+    childWindow.webContents.openDevTools({ mode: "undocked", activate: true });
   }
 });

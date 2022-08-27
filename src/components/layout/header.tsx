@@ -25,7 +25,10 @@ export default function Header() {
   const { videos } = useContext(VideoContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef(null);
-
+  if (pathname === "/") {
+    // splash screen
+    return <></>;
+  }
   return (
     <Flex direction="row" gap={3} alignItems="center">
       <IconButton

@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
-import ytdl from "ytdl-core";
 import { Events } from "../../libs/events";
 import { Stat, VideoInfo } from "../../libs/types";
+import { DEPENDENCIES_CHECK_STATUS } from "./types";
 
 export type ProgressData = {
   id: string;
@@ -23,6 +23,11 @@ export type DownloadVideoRequestType = {
   formatId: string;
 };
 
+export type DependenciesCheckData = {
+  status: DEPENDENCIES_CHECK_STATUS;
+  message?: string;
+};
+
 export type ContextBridgeApi = {
   exposedReadUrl: (url: string) => Promise<VideoInfo>;
   exposedDownloadVideo: (
@@ -32,9 +37,13 @@ export type ContextBridgeApi = {
   exposedOnDownloadVideoProgress: (
     callback: (data: StreamStatType) => void
   ) => void;
+  exposedOnDependenciesCheck: (
+    callback: (data: DependenciesCheckData) => void
+  ) => () => void;
   exposedOnStopDownloadingVideo: (
     callback: (data: StreamStatType) => void
   ) => void;
+  exposedStartDependenciesCheck: () => void;
 };
 
 const exposedApi: ContextBridgeApi = {
@@ -73,6 +82,17 @@ const exposedApi: ContextBridgeApi = {
     ipcRenderer.on(Events.STOP_DOWNLOAD_VIDEO_SUCCESS_EVENT, (event, data) =>
       callback(data)
     ),
+  exposedStartDependenciesCheck: () =>
+    ipcRenderer.send(Events.START_DEPENDENCY_CHECK_EVENT),
+  exposedOnDependenciesCheck: (
+    callback: (data: DependenciesCheckData) => void
+  ) => {
+    ipcRenderer.on(Events.DEPENDENCY_CHECK_EVENT, (event, data) =>
+      callback(data)
+    );
+    return () =>
+      ipcRenderer.removeListener(Events.DEPENDENCY_CHECK_EVENT, callback);
+  },
 };
 
 contextBridge.exposeInMainWorld("api", exposedApi);

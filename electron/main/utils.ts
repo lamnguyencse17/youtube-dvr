@@ -2,7 +2,7 @@ import fs from "fs";
 import fetch from "node-fetch";
 import path from "path";
 import yauzl from "yauzl";
-import { ROOT_PATH } from ".";
+import { ROOT_PATH } from "./config";
 import logger from "./logger";
 
 export const downloadFileFromUrl = async (url: string, path: string) => {
