@@ -9,13 +9,13 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
 export default function Home() {
+  const navigate = useNavigate();
   const { setVideo } = useContext(VideoContext);
-  const [videoId, setVideoId] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
 
   const urlSchema = z.object({
     url: z
@@ -41,6 +41,7 @@ export default function Home() {
   const handleGetUrl = async (url: string) => {
     const data = await window.api.exposedReadUrl(url);
     setVideo(data.id, data);
+    navigate(`/videos/${data.id}`);
   };
   return (
     <Flex

@@ -147,7 +147,6 @@ export const handleStopDownloadingEvent = async (
       );
     }
     if (!mainWindow) {
-      event.sender.send(Events.DOWNLOAD_VIDEO_STARTED_EVENT, false);
       logger.error(
         {
           stack: new Error().stack,

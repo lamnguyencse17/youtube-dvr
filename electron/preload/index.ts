@@ -79,9 +79,9 @@ const exposedApi: ContextBridgeApi = {
     });
   },
   exposedOnStopDownloadingVideo: (callback: (data: StreamStatType) => void) =>
-    ipcRenderer.on(Events.STOP_DOWNLOAD_VIDEO_SUCCESS_EVENT, (event, data) =>
-      callback(data)
-    ),
+    ipcRenderer.on(Events.STOP_DOWNLOAD_VIDEO_SUCCESS_EVENT, (event, data) => {
+      callback(data);
+    }),
   exposedStartDependenciesCheck: () =>
     ipcRenderer.send(Events.START_DEPENDENCY_CHECK_EVENT),
   exposedOnDependenciesCheck: (

@@ -12,6 +12,13 @@ import {
   Button,
   Divider,
   Select,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  Stat,
+  StatLabel,
+  StatNumber,
 } from "@chakra-ui/react";
 import { useContext, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -40,6 +47,7 @@ export default function SingleVideo() {
 
   const [showMore, setShowMore] = useState(false);
   const [formatId, setFormatId] = useState<string | null>(null);
+
   if (!videoId) {
     return <div> Nope </div>;
   }
@@ -65,6 +73,7 @@ export default function SingleVideo() {
     });
     if (!isSuccess) {
       console.error("Failed to start downloading");
+      return;
     }
   };
 
@@ -76,7 +85,8 @@ export default function SingleVideo() {
   };
 
   const isRecording = !!streamStat && streamStat.isRecording;
-  console.log(video);
+  console.log(streamStat);
+  // console.log(video);
   return (
     <Flex direction="column" w="100%" h="100%" padding="5" gap={3}>
       <Flex direction="row" justifyContent="end" gap={2}>
@@ -85,6 +95,7 @@ export default function SingleVideo() {
           onChange={(e) => {
             setFormatId(e.target.value);
           }}
+          disabled={isRecording}
         >
           {video.formats.map((format) => (
             <option
@@ -109,6 +120,34 @@ export default function SingleVideo() {
           {isRecording ? "Stop" : "Record"}
         </Button>
       </Flex>
+      {streamStat && (
+        <Accordion>
+          <AccordionItem>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                Stats
+              </Box>
+            </AccordionButton>
+
+            <AccordionPanel pb={4}>
+              <Flex direction="row">
+                <Stat>
+                  <StatLabel>Time</StatLabel>
+                  <StatNumber>{streamStat.time}</StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>Size</StatLabel>
+                  <StatNumber>{streamStat.size.text}</StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>Bitrate</StatLabel>
+                  <StatNumber>{streamStat.bitrate.text}</StatNumber>
+                </Stat>
+              </Flex>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      )}
       {video.isLive ? (
         <Grid templateColumns="repeat(6, 1fr)" gap={2} minHeight="300px">
           <GridItem colSpan={[6, 6, 4]} height="100%">
