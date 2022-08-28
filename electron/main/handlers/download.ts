@@ -87,7 +87,6 @@ export const handleDownloadEvent = async (
             ...stat,
           };
           streamCache.set<StreamStatType>(videoId, streamInfo);
-          // logger.info(streamInfo, "PROCESSING STAT DATA");
           mainWindow.webContents.send(
             Events.DOWNLOAD_VIDEO_PROGRESS_EVENT,
             streamInfo

@@ -22,7 +22,6 @@ import {
 } from "@chakra-ui/react";
 import { useContext, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import ytdl from "ytdl-core";
 
 const processDescription = (data: string) => {
   const lines = data.split("\n");
@@ -47,6 +46,15 @@ export default function SingleVideo() {
 
   const [showMore, setShowMore] = useState(false);
   const [formatId, setFormatId] = useState<string | null>(null);
+  const selectedFormat = useMemo(() => {
+    if (!formatId || !videoId) {
+      return null;
+    }
+    const searchedFormat = videos[videoId].formats.find(
+      (format) => format.formatId === formatId
+    );
+    return searchedFormat ? searchedFormat : null;
+  }, [formatId]);
 
   if (!videoId) {
     return <div> Nope </div>;
@@ -136,13 +144,23 @@ export default function SingleVideo() {
                   <StatNumber>{streamStat.time}</StatNumber>
                 </Stat>
                 <Stat>
-                  <StatLabel>Size</StatLabel>
+                  <StatLabel>Downloaded</StatLabel>
                   <StatNumber>{streamStat.size.text}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>Bitrate</StatLabel>
                   <StatNumber>{streamStat.bitrate.text}</StatNumber>
                 </Stat>
+                {selectedFormat && selectedFormat.filesizeApprox && (
+                  <Stat>
+                    <StatLabel>Progress</StatLabel>
+                    <StatNumber>
+                      {(streamStat.size.value / selectedFormat.filesizeApprox) *
+                        100}
+                      %
+                    </StatNumber>
+                  </Stat>
+                )}
               </Flex>
             </AccordionPanel>
           </AccordionItem>

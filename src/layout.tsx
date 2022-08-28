@@ -4,6 +4,7 @@ import Videos from "./pages/videos";
 import Header from "./components/layout/header";
 import { Box, Flex } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
+import Settings from "./pages/settings";
 
 const Layout = () => {
   return (
@@ -14,6 +15,7 @@ const Layout = () => {
           <Route path="/" element={<Splash />} />
           <Route path="/home" element={<Home />} />
           <Route path="/videos/*" element={<Videos />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </Box>
     </Flex>

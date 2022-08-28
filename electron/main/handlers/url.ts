@@ -23,7 +23,7 @@ export const handleReadUrl = async (event: IpcMainEvent, url: string) => {
 };
 
 const parseOutput = (output: string) => {
-  const video = camelcaseKeys(JSON.parse(decodeURI(output)), { deep: true });
+  const video = camelcaseKeys(JSON.parse(output), { deep: true });
   const {
     id,
     thumbnails,
@@ -33,6 +33,11 @@ const parseOutput = (output: string) => {
     categories,
     webpageUrl,
   } = video as RawVideoInfo;
+  const cleanedFormats = formats.map((format) => {
+    delete format.fragments;
+    delete format.url;
+    return format;
+  });
   const videoInfo = {
     id: id,
     url: webpageUrl,
@@ -46,7 +51,7 @@ const parseOutput = (output: string) => {
       url: video.channelURL,
     },
     description,
-    formats,
+    formats: cleanedFormats,
     categories,
   };
   return { videoInfo, rawInfo: video };

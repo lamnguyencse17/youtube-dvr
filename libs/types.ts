@@ -76,8 +76,8 @@ export interface RawVideoInfo extends Omit<VideoInfo, "author"> {
   vcodec: string;
   acodec: string;
   dynamicRange: string;
-  videoEXT: string;
-  audioEXT: string;
+  videoExt: string;
+  audioExt: string;
   vbr: number;
   abr: number;
   format: string;
@@ -95,7 +95,7 @@ export interface AutomaticCaptions {}
 export interface Format {
   formatId: string;
   formatIndex: null;
-  url: string;
+  url?: string;
   manifestURL: string;
   tbr: number;
   ext: string;
@@ -115,6 +115,8 @@ export interface Format {
   format: string;
   resolution: string;
   httpHeaders: HTTPHeaders;
+  filesizeApprox?: number;
+  fragments?: any;
 }
 
 export interface HTTPHeaders {
