@@ -1,7 +1,7 @@
 import path from "path";
 import { exec as childExec } from "child_process";
 import { promisify } from "util";
-import logger from "./logger";
+import { logger } from "./logger";
 import fs from "fs";
 import { ROOT_PATH } from "./config";
 
@@ -29,12 +29,12 @@ export const execDownloadVideo = async (
   const ffmpegPath = path.join(ROOT_PATH.bin, "ffmpeg.exe");
   await access(ytdlPath, fs.constants.F_OK);
   await access(ffmpegPath, fs.constants.F_OK);
-  logger.info("FFMPEG and YTDL path exists");
+  logger().info("FFMPEG and YTDL path exists");
   const filter = `-f "${formatId},ba"`; //ba stands for best audio
   const ffmpegLocation = `--ffmpeg-location ${ffmpegPath}`;
   const outputName = `-o "${fileName}"`;
   const saveLocation = `-P ${location}`;
   const command = `${ytdlPath} ${saveLocation} ${outputName} ${filter} ${ffmpegLocation} --windows-filenames --no-part ${url}`;
-  logger.info(`DOWNLOADING WITH THIS COMMAND ${command}`);
+  logger().info(`DOWNLOADING WITH THIS COMMAND ${command}`);
   return childExec(command, { maxBuffer: 1024 * 500 });
 };

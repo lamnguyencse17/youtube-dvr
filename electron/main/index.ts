@@ -1,11 +1,12 @@
 import { app, BrowserWindow, shell, ipcMain } from "electron";
-import { release, homedir } from "os";
+import { release } from "os";
 import { join } from "path";
 import kill from "tree-kill";
 import { processCache } from "./cache";
 import { ROOT_PATH } from "./config";
 import registerEvents from "./events";
-import logger from "./logger";
+import { initLogger } from "./logger";
+import { ensureAppDataDir } from "./utils";
 
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
 
@@ -22,10 +23,6 @@ let win: BrowserWindow | null = null;
 const preload = join(__dirname, "../preload/index.js");
 const url = process.env.VITE_DEV_SERVER_URL as string;
 const indexHtml = join(ROOT_PATH.dist, "index.html");
-
-logger.info({
-  ROOT_PATH,
-});
 
 async function createWindow() {
   win = new BrowserWindow({
@@ -56,8 +53,11 @@ async function createWindow() {
 }
 
 app.whenReady().then(() => {
-  createWindow().then(() => {
-    registerEvents(ipcMain, win);
+  ensureAppDataDir().then(() => {
+    initLogger();
+    createWindow().then(() => {
+      registerEvents(ipcMain, win);
+    });
   });
 });
 

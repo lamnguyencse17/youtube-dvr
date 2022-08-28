@@ -2,7 +2,7 @@ import { BrowserWindow, dialog, IpcMainEvent } from "electron";
 import { processCache, streamCache, videoCache } from "../cache";
 import { Events } from "../../../libs/events";
 import { DownloadVideoRequestType, StreamStatType } from "../../preload";
-import logger from "../logger";
+import { logger } from "../logger";
 import { execDownloadVideo, execReadInfo } from "../yt-dlp";
 import { RawStat, RawVideoInfo, Stat } from "../../../libs/types";
 import camelcaseKeys from "camelcase-keys";
@@ -16,18 +16,18 @@ export const handleDownloadEvent = async (
   { videoId, formatId }: DownloadVideoRequestType
 ) => {
   try {
-    logger.info(
+    logger().info(
       { videoId, formatId },
       "Recieved download request with following arguments"
     );
     if (streamCache.get<StreamStatType>(videoId)) {
-      console.log("Video is already downloading");
+      logger().info("Video is already downloading");
       event.sender.send(Events.DOWNLOAD_VIDEO_STARTED_EVENT, false);
       return;
     }
     if (!mainWindow) {
       event.sender.send(Events.DOWNLOAD_VIDEO_STARTED_EVENT, false);
-      logger.error(
+      logger().error(
         {
           stack: new Error().stack,
           id: videoId,
@@ -62,7 +62,7 @@ export const handleDownloadEvent = async (
     if (canceled || !filePath) {
       return;
     } else {
-      logger.info({ filePath }, "File path successfully identifed");
+      logger().info({ filePath }, "File path successfully identifed");
     }
     const fileName = path.basename(filePath);
     const location = path.dirname(filePath);
@@ -95,12 +95,12 @@ export const handleDownloadEvent = async (
       });
       if (ytdlProcess.stdout) {
         ytdlProcess.stdout.on("data", (data) => {
-          logger.info(data);
+          logger().info(data);
         });
       }
     }
   } catch (err) {
-    logger.error(
+    logger().error(
       { err, videoId },
       "SOMETHING WENT WRONG WHILE REQUESTING DOWNLOAD"
     );
@@ -116,7 +116,7 @@ export const handleStopDownloadingEvent = async (
     const stat = streamCache.get<StreamStatType>(videoId);
     const streamProcess = processCache[videoId];
     if (!streamProcess) {
-      logger.error(
+      logger().error(
         { id: videoId },
         `Stream process for video ${videoId} is not available`
       );
@@ -134,19 +134,19 @@ export const handleStopDownloadingEvent = async (
       }
     });
     delete processCache[videoId];
-    logger.info(
+    logger().info(
       { id: videoId },
       `Stream controller for video ${videoId} is destroyed`
     );
     const deleted = streamCache.del(videoId);
     if (deleted !== 1) {
-      logger.fatal(
+      logger().fatal(
         { id: videoId, deleted },
         `Stream controller for video ${videoId} deleted more different than one???`
       );
     }
     if (!mainWindow) {
-      logger.error(
+      logger().error(
         {
           stack: new Error().stack,
           id: videoId,
@@ -160,7 +160,7 @@ export const handleStopDownloadingEvent = async (
       isRecording: false,
     });
   } catch (err) {
-    logger.error(
+    logger().error(
       { err, id: videoId },
       "Something went wrong while executing handleStopDownloadingEvent"
     );

@@ -1,7 +1,7 @@
 import { IpcMainEvent } from "electron";
 import { Events } from "../../../libs/events";
 import { videoCache } from "../cache";
-import logger from "../logger";
+import { logger } from "../logger";
 import camelcaseKeys from "camelcase-keys";
 import { RawVideoInfo } from "../../../libs/types";
 import { execReadInfo } from "../yt-dlp";
@@ -10,11 +10,11 @@ export const handleReadUrl = async (event: IpcMainEvent, url: string) => {
   try {
     const output = await execReadInfo(url);
     const { videoInfo, rawInfo } = parseOutput(output);
-    // logger.info({ videoInfo, rawInfo });
+    // logger().info({ videoInfo, rawInfo });
     cacheVideoInfo(rawInfo.id, rawInfo);
     event.sender.send(Events.READ_URL_SUCCESS_EVENT, videoInfo);
   } catch (err) {
-    logger.error(
+    logger().error(
       { url, err },
       `Something went wrong during getting infos for url ${url}`
     );
@@ -60,13 +60,13 @@ const parseOutput = (output: string) => {
 const cacheVideoInfo = (id: string, videoInfo: RawVideoInfo) => {
   const isSuccess = videoCache.set(id, videoInfo);
   if (!isSuccess) {
-    logger.error(
+    logger().error(
       { id, url: videoInfo.webpageUrl },
       `Cache for video id ${videoInfo.id} failed`
     );
     return;
   }
-  logger.info(
+  logger().info(
     { id, url: videoInfo.webpageUrl },
     `Cache for video id ${videoInfo.id} success`
   );

@@ -1,4 +1,4 @@
-import logger from "./logger";
+import { logger } from "./logger";
 import path from "path";
 import fs from "fs";
 import { promisify } from "util";
@@ -21,16 +21,16 @@ export const checkDependencies = async () => {
   sendEvent(Events.DEPENDENCY_CHECK_EVENT, {
     status: DEPENDENCIES_CHECK_STATUS.STARTED,
   });
-  logger.info("CHECKING FOR DEPENDENCIES");
+  logger().info("CHECKING FOR DEPENDENCIES");
   Promise.allSettled([handleYtdlDependency(), handleFfmpegDependency()])
     .then(() => {
-      logger.info("FINISH CHECKING DEPENDENCIES");
+      logger().info("FINISH CHECKING DEPENDENCIES");
       sendEvent(Events.DEPENDENCY_CHECK_EVENT, {
         status: DEPENDENCIES_CHECK_STATUS.SUCCESS,
       });
     })
     .catch((err) => {
-      logger.error({ err }, "ERROR WHILE CHECKING DEPENDENCIES");
+      logger().error({ err }, "ERROR WHILE CHECKING DEPENDENCIES");
       sendEvent(Events.DEPENDENCY_CHECK_EVENT, {
         status: DEPENDENCIES_CHECK_STATUS.ERROR,
       });
@@ -45,13 +45,13 @@ const handleYtdlDependency = async () => {
     if (stderr === "") {
       const { stderr } = await exec(`${ytdlPath} -U`);
       if (stderr === "") {
-        logger.info("UPDATE YTDL SUCCESSFULLY OR UP-TO-DATE");
+        logger().info("UPDATE YTDL SUCCESSFULLY OR UP-TO-DATE");
       }
     }
   } catch (err) {
-    logger.info("YTDL NOT FOUND. DOWNLOADING");
+    logger().info("YTDL NOT FOUND. DOWNLOADING");
     await downloadFileFromUrl(ytdlInfo, ytdlPath);
-    logger.info("FINISH PULLING YT-DLP");
+    logger().info("FINISH PULLING YT-DLP");
   }
 };
 
@@ -60,17 +60,17 @@ const handleFfmpegDependency = async () => {
 
   try {
     await access(ffmpegPath, fs.constants.F_OK);
-    logger.info("FFMPEG WAS FOUND");
+    logger().info("FFMPEG WAS FOUND");
   } catch (err) {
-    logger.info("FFMPEG NOT FOUND. DOWNLOADING");
+    logger().info("FFMPEG NOT FOUND. DOWNLOADING");
     const fileName = "ffmpeg.zip";
     const ffmpegZipPath = path.join(ROOT_PATH.bin, fileName);
     await downloadFileFromUrl(ffmpegInfo, ffmpegZipPath);
     try {
       await unzipFfmpeg(ffmpegZipPath);
-      logger.info("FINISH PULLING FFMPEG");
+      logger().info("FINISH PULLING FFMPEG");
     } catch (err) {
-      logger.info("FAILED TO FINISH UNZIP FFMPEG");
+      logger().info("FAILED TO FINISH UNZIP FFMPEG");
       throw err;
     }
   }

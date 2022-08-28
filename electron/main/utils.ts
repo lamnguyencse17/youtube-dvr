@@ -3,7 +3,11 @@ import fetch from "node-fetch";
 import path from "path";
 import yauzl from "yauzl";
 import { ROOT_PATH } from "./config";
-import logger from "./logger";
+import { tempLogger, logger } from "./logger";
+import { promisify } from "util";
+
+const mkdir = promisify(fs.mkdir);
+const access = promisify(fs.access);
 
 export const downloadFileFromUrl = async (url: string, path: string) => {
   const file = fs.createWriteStream(path);
@@ -54,7 +58,7 @@ export const unzipFfmpeg = (zipPath: string) =>
         }
       });
       zipFile.on("end", () => {
-        logger.info("CLEANING DOWNLOADED FFMPEG ZIP");
+        logger().info("CLEANING DOWNLOADED FFMPEG ZIP");
         fs.unlink(zipPath, (err) => {
           reject(err);
         });
@@ -65,3 +69,39 @@ export const unzipFfmpeg = (zipPath: string) =>
       });
     });
   });
+
+export const ensureAppDataDir = async () => {
+  const appDataPath = ROOT_PATH.appData;
+  const binPath = ROOT_PATH.bin;
+  const logPath = ROOT_PATH.logs;
+  try {
+    await access(appDataPath);
+  } catch (err) {
+    tempLogger.error(err, "MISSING SOME DIRECTORIES");
+    try {
+      await mkdir(appDataPath, { recursive: true });
+    } catch (err) {
+      tempLogger.error(err, "ERROR WHILE CREATING APPDATA DIRECTORY");
+    }
+  }
+  try {
+    await access(binPath);
+  } catch (err) {
+    tempLogger.error(err, "MISSING BIN DIRECTORY");
+    try {
+      await mkdir(binPath, { recursive: true });
+    } catch (err) {
+      tempLogger.error(err, "ERROR WHILE CREATING BIN DIRECTORY");
+    }
+  }
+  try {
+    await access(logPath);
+  } catch (err) {
+    tempLogger.error(err, "MISSING LOG DIRECTORY");
+    try {
+      await mkdir(logPath, { recursive: true });
+    } catch (err) {
+      tempLogger.error(err, "ERROR WHILE CREATING LOG DIRECTORY");
+    }
+  }
+};
